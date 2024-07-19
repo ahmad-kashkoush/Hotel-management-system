@@ -8,6 +8,8 @@ import Settings from "@/pages/Settings";
 import NewUsers from "@/pages/Users";
 
 import AppLayout from "@/ui/AppLayout";
+import { QueryClient, QueryClientProvider } from "@tanstack/react-query";
+import { ReactQueryDevtools } from "@tanstack/react-query-devtools";
 import {
   createBrowserRouter,
   Navigate,
@@ -41,9 +43,20 @@ const router = createBrowserRouter([
   },
   { path: "/login", element: <Login /> },
 ]);
-
+const queryClient = new QueryClient({
+  defaultOptions: {
+    queries: {
+      staleTime: 0,
+    },
+  },
+});
 function App() {
-  return <RouterProvider router={router} />;
+  return (
+    <QueryClientProvider client={queryClient}>
+      <ReactQueryDevtools initialIsOpen={false} />
+      <RouterProvider router={router} />;
+    </QueryClientProvider>
+  );
 }
 
 export default App;
