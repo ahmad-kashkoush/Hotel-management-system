@@ -1,5 +1,3 @@
-import styled from "styled-components";
-
 import Input from "../../ui/Input";
 import Form from "../../ui/Form";
 import Button from "../../ui/Button";
@@ -8,7 +6,7 @@ import Textarea from "../../ui/Textarea";
 import { useForm } from "react-hook-form";
 import { insertCabin } from "@/services/apiCabins";
 import toast from "react-hot-toast";
-import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query";
+import { useMutation, useQueryClient } from "@tanstack/react-query";
 import FormRow from "@/ui/FormRow";
 
 function CreateCabinForm({ onCancelClick }) {
@@ -34,8 +32,7 @@ function CreateCabinForm({ onCancelClick }) {
   });
 
   function onSubmit(data) {
-    // const cabinObject = getValues();
-    mutate(data);
+    mutate({ ...data, image: data.image[0] });
   }
 
   function onError(errors) {
