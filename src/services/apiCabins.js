@@ -10,6 +10,19 @@ export async function getCabins() {
 
 }
 
+export async function insertCabin(cabinData) {
+    const { data, error } = await supabase
+        .from('cabins')
+        .insert([
+            {   
+                 ...cabinData 
+                },
+        ])
+        .select();
+    if (error) throw error;
+    console.log(data);
+    return data;
+}
 export async function deleteCabin(cabinId) {
     const { error } = await supabase
         .from('cabins')
