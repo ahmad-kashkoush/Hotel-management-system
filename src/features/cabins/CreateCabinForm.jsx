@@ -4,10 +4,9 @@ import Button from "../../ui/Button";
 import FileInput from "../../ui/FileInput";
 import Textarea from "../../ui/Textarea";
 import { useForm } from "react-hook-form";
-import { insertCabin, updateCabin } from "@/services/apiCabins";
-import toast from "react-hot-toast";
-import { useMutation, useQueryClient } from "@tanstack/react-query";
 import FormRow from "@/ui/FormRow";
+import { useCreateCabin } from "@/features/cabins/useCreateCabin";
+import { useUpdateCabin } from "@/features/cabins/useUpdateCabin";
 
 function CreateCabinForm({ curCabin = {}, onCloseForm }) {
   const { id: editId, ...editValues } = curCabin;
@@ -23,40 +22,38 @@ function CreateCabinForm({ curCabin = {}, onCloseForm }) {
     defaultValues: isEdit ? editValues : {},
   });
 
-  const queryClient = useQueryClient();
-  const { mutate, isLoading: isCreatingCabin } = useMutation({
-    mutationFn: insertCabin,
-    onSuccess: () => {
-      toast.success("cabin successfully Created");
-      queryClient.invalidateQueries({
-        queryKey: ["cabins"],
-      });
-      reset();
-      onCloseForm();
-    },
-    onError: (err) => toast.error(err.message),
-  });
-  const { mutate: updatecabn, isLoading: isUpdatingCabin } = useMutation({
-    mutationFn: (updatedCabin) => updateCabin(editId, curImage, updatedCabin),
-    onSuccess: () => {
-      toast.success("cabin successfully updated");
-      queryClient.invalidateQueries({
-        queryKey: ["cabins"],
-      });
-      reset();
-      onCloseForm();
-    },
-    onError: (err) => toast.error(err.message),
-  });
+  // old way of passing reset function
+  // const { isCreatingCabin, createCabin } = useCreateCabin({
+  //   reset,
+  //   onCloseForm,
+  // });
+
+  // reset, onClose will be passed in mutate objectOptions
+  const { isCreatingCabin, createCabin } = useCreateCabin();
+
+  const { isUpdatingCabin, updateCabin } = useUpdateCabin();
 
   function onSubmit(data) {
-    if (isEdit) {
-      // console.log(data.image[0]);
-      updatecabn({ ...data, image: data.image[0] });
-      return;
-    }
-
-    mutate({ ...data, image: data.image[0] });
+    const image = typeof data.image === "string" ? data.image : data.image[0];
+    const updatedCabin = { ...data, image: image };
+    if (isEdit)
+      updateCabin(
+        { updatedCabin, editId, curImage },
+        {
+          onSuccess: () => {
+            reset();
+            onCloseForm();
+          },
+        }
+      );
+    else
+      createCabin(updatedCabin, {
+        onSuccess: () => {
+          // instead of passing them to hook ⭐⭐
+          reset();
+          onCloseForm();
+        },
+      });
   }
 
   function onError(errors) {
