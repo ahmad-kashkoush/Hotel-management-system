@@ -4,40 +4,65 @@ import Button from "../../ui/Button";
 import FileInput from "../../ui/FileInput";
 import Textarea from "../../ui/Textarea";
 import { useForm } from "react-hook-form";
-import { insertCabin } from "@/services/apiCabins";
+import { insertCabin, updateCabin } from "@/services/apiCabins";
 import toast from "react-hot-toast";
 import { useMutation, useQueryClient } from "@tanstack/react-query";
 import FormRow from "@/ui/FormRow";
 
-function CreateCabinForm({ onCancelClick }) {
+function CreateCabinForm({ curCabin = {}, onCloseForm }) {
+  const { id: editId, ...editValues } = curCabin;
+  const isEdit = Boolean(editId);
+  const curImage = isEdit ? "" : editValues.image;
   const {
     getValues,
     register,
     handleSubmit,
     reset,
     formState: { errors },
-  } = useForm();
+  } = useForm({
+    defaultValues: isEdit ? editValues : {},
+  });
 
   const queryClient = useQueryClient();
   const { mutate, isLoading: isCreatingCabin } = useMutation({
-    mutationFn: (cabinObj) => insertCabin(cabinObj),
+    mutationFn: insertCabin,
     onSuccess: () => {
       toast.success("cabin successfully Created");
       queryClient.invalidateQueries({
         queryKey: ["cabins"],
       });
       reset();
+      onCloseForm();
+    },
+    onError: (err) => toast.error(err.message),
+  });
+  const { mutate: updatecabn, isLoading: isUpdatingCabin } = useMutation({
+    mutationFn: (updatedCabin) => updateCabin(editId, curImage, updatedCabin),
+    onSuccess: () => {
+      toast.success("cabin successfully updated");
+      queryClient.invalidateQueries({
+        queryKey: ["cabins"],
+      });
+      reset();
+      onCloseForm();
     },
     onError: (err) => toast.error(err.message),
   });
 
   function onSubmit(data) {
+    if (isEdit) {
+      // console.log(data.image[0]);
+      updatecabn({ ...data, image: data.image[0] });
+      return;
+    }
+
     mutate({ ...data, image: data.image[0] });
   }
 
   function onError(errors) {
     console.log(errors);
   }
+
   return (
     <Form onSubmit={handleSubmit(onSubmit, onError)}>
       <FormRow label="Cabin name" error={errors?.name?.message}>
@@ -108,11 +133,14 @@ function CreateCabinForm({ onCancelClick }) {
 
       <FormRow>
         {/* type is an HTML attribute! */}
-        <Button variation="secondary" type="reset" onClick={onCancelClick}>
+        <Button variation="secondary" type="reset" onClick={onCloseForm}>
           Cancel
         </Button>
-        <Button type="submit" disabled={isCreatingCabin}>
-          {isCreatingCabin ? "Creating" : "Edit cabin"}
+        <Button type="submit" disabled={isCreatingCabin || isUpdatingCabin}>
+          {isEdit && isUpdatingCabin && "Updating"}
+          {isEdit && !isUpdatingCabin && "Update cabin"}
+          {!isEdit && isCreatingCabin && "Creating"}
+          {!isEdit && !isCreatingCabin && "Create cabin"}
         </Button>
       </FormRow>
     </Form>

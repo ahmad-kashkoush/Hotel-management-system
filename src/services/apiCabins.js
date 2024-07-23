@@ -40,3 +40,30 @@ export async function deleteCabin(cabinId) {
         .eq('id', cabinId);
     if (error) throw error;
 }
+
+export async function updateCabin(cabinId, previousImage, updatedCabin) {
+
+    const imageName = `${Math.random()}-${updatedCabin.image.name}`.replaceAll('/', '').replaceAll(' ', '-');
+    const { data, error } = await supabase
+        .from('cabins')
+        .update({
+            ...updatedCabin,
+            image: `${supabaseUrl}/storage/v1/object/public/cabin-images/${imageName}`
+        })
+        .eq('id', cabinId)
+        .select().single();
+
+
+    if (error) throw error;
+    const { error: imageError } = await supabase
+        .storage
+        .from('cabin-images')
+        .upload(imageName, updatedCabin.image);
+    if (imageError) {
+        await deleteCabin(data.id);
+        console.error(imageError)
+        throw new Error("createCabin: error uploading Image");
+    }
+    console.log(data);
+
+}
