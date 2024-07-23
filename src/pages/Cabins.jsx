@@ -1,7 +1,6 @@
-import { useEffect, useState } from "react";
+import { useState } from "react";
 import Heading from "../ui/Heading";
 import Row from "../ui/Row";
-import { getCabins } from "@/services/apiCabins";
 import CabinTable from "@/features/cabins/CabinTable";
 import Button from "@/ui/Button";
 import CreateCabinForm from "@/features/cabins/CreateCabinForm";
@@ -14,15 +13,16 @@ const Overlay = styled.div`
   translate: -50% -50%;
 `;
 function Cabins() {
-  const [cabinFormOpen, setCabinFormOpen] = useState(false);
+  const [openForm, setOpenForm] = useState(false);
+
   return (
     <Row>
       <Heading as="h1">All cabins</Heading>
       <CabinTable />
-      <Button onClick={() => setCabinFormOpen(true)}>create cabin</Button>
-      {cabinFormOpen && (
+      <Button onClick={() => setOpenForm(true)}>create cabin</Button>
+      {openForm && (
         <Overlay>
-          <CreateCabinForm onCancelClick={() => setCabinFormOpen(false)} />
+          <CreateCabinForm onCloseForm={() => setOpenForm(false)} />
         </Overlay>
       )}
     </Row>
