@@ -4,9 +4,9 @@ import Button from "../../ui/Button";
 import FileInput from "../../ui/FileInput";
 import Textarea from "../../ui/Textarea";
 import { useForm } from "react-hook-form";
-import FormRow from "@/ui/FormRow";
 import { useCreateCabin } from "@/features/cabins/useCreateCabin";
 import { useUpdateCabin } from "@/features/cabins/useUpdateCabin";
+import { FormRow } from "@/ui";
 
 function CreateCabinForm({ curCabin = {}, onCloseForm }) {
   const { id: editId, ...editValues } = curCabin;

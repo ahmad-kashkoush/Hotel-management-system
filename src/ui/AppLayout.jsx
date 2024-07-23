@@ -1,6 +1,5 @@
 import GlobalStyles from "@/styles/GlobalStyles";
-import Header from "@/ui/Header";
-import Sidebar from "@/ui/Sidebar";
+import { Header, Sidebar } from "@/ui";
 import { Outlet } from "react-router";
 import styled from "styled-components";
 

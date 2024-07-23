@@ -1,7 +1,7 @@
 import CabinRow from "@/features/cabins/CabinRow";
 import { useGetCabins } from "@/features/cabins/useGetCabins";
 import { getCabins } from "@/services/apiCabins";
-import Spinner from "@/ui/Spinner";
+import { Spinner } from "@/ui";
 import { useQuery } from "@tanstack/react-query";
 import styled from "styled-components";
 

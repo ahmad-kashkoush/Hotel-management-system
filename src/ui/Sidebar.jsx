@@ -1,5 +1,5 @@
+import { MainNav } from "@/ui";
 import styled from "styled-components";
-import MainNav from "@/ui/MainNav";
 
 const Logo = styled.h1`
   letter-spacing: -5px;
