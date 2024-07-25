@@ -1,3 +1,6 @@
+import { useEffect } from "react";
+import { createPortal } from "react-dom";
+import { HiXMark } from "react-icons/hi2";
 import styled from "styled-components";
 
 const StyledModal = styled.div`
@@ -48,3 +51,26 @@ const Button = styled.button`
     color: var(--color-grey-500);
   }
 `;
+
+function Modal({ children, onClose }) {
+  useEffect(() => {
+    const closeCallback = (e) => {
+      if (e.key === "Escape") onClose?.();
+    };
+    window.addEventListener("keydown", closeCallback);
+    // cleanUp function
+    return () => window.removeEventListener("keydown", closeCallback);
+  }, []);
+  return createPortal(
+    <Overlay>
+      <StyledModal>
+        <Button onClick={() => onClose?.()}>
+          <HiXMark />
+        </Button>
+        <div>{children}</div>
+      </StyledModal>
+    </Overlay>,
+    document.body
+  );
+}
+export default Modal;
