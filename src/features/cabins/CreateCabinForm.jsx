@@ -36,24 +36,17 @@ function CreateCabinForm({ curCabin = {}, onCloseForm }) {
   function onSubmit(data) {
     const image = typeof data.image === "string" ? data.image : data.image[0];
     const updatedCabin = { ...data, image: image };
+    const onSuccessAction = () => {
+      // instead of passing them to hook ⭐⭐
+      reset();
+      onCloseForm?.();
+    };
     if (isEdit)
       updateCabin(
         { updatedCabin, editId, curImage },
-        {
-          onSuccess: () => {
-            reset();
-            onCloseForm();
-          },
-        }
+        { onSuccess: onSuccessAction }
       );
-    else
-      createCabin(updatedCabin, {
-        onSuccess: () => {
-          // instead of passing them to hook ⭐⭐
-          reset();
-          onCloseForm();
-        },
-      });
+    else createCabin(updatedCabin, { onSuccess: onSuccessAction });
   }
 
   function onError(errors) {
@@ -61,7 +54,10 @@ function CreateCabinForm({ curCabin = {}, onCloseForm }) {
   }
 
   return (
-    <Form onSubmit={handleSubmit(onSubmit, onError)}>
+    <Form
+      onSubmit={handleSubmit(onSubmit, onError)}
+      type={onCloseForm ? "modal" : "regular"}
+    >
       <FormRow label="Cabin name" error={errors?.name?.message}>
         <Input
           type="text"
@@ -130,7 +126,11 @@ function CreateCabinForm({ curCabin = {}, onCloseForm }) {
 
       <FormRow>
         {/* type is an HTML attribute! */}
-        <Button variation="secondary" type="reset" onClick={onCloseForm}>
+        <Button
+          variation="secondary"
+          type="reset"
+          onClick={() => onCloseForm?.()}
+        >
           Cancel
         </Button>
         <Button type="submit" disabled={isCreatingCabin || isUpdatingCabin}>
