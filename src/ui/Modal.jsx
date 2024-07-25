@@ -1,4 +1,6 @@
-import { useEffect } from "react";
+import { useEscKeyDown } from "@/hooks/useEscKeyDown";
+import { useOutsideClick } from "@/hooks/useOutsideClick";
+import { cloneElement, createContext, useContext, useState } from "react";
 import { createPortal } from "react-dom";
 import { HiXMark } from "react-icons/hi2";
 import styled from "styled-components";
@@ -51,26 +53,61 @@ const Button = styled.button`
     color: var(--color-grey-500);
   }
 `;
+const ModalContext = createContext();
 
-function Modal({ children, onClose }) {
-  useEffect(() => {
-    const closeCallback = (e) => {
-      if (e.key === "Escape") onClose?.();
-    };
-    window.addEventListener("keydown", closeCallback);
-    // cleanUp function
-    return () => window.removeEventListener("keydown", closeCallback);
-  }, []);
+function Modal({ children }) {
+  const [openName, setOpenName] = useState("");
+
+  const close = () => setOpenName("");
+  const open = setOpenName;
+
+  return (
+    <ModalContext.Provider
+      value={{
+        openName,
+        open,
+        close,
+      }}
+    >
+      {children}
+    </ModalContext.Provider>
+  );
+}
+export const useModal = () => useContext(ModalContext);
+
+function Window({ children, name }) {
+  const { openName, close } = useModal();
+
+  const { ref: clickRef } = useOutsideClick(close);
+  const { ref: escRef } = useEscKeyDown(close);
+
+  if (openName !== name) return null;
   return createPortal(
     <Overlay>
-      <StyledModal>
-        <Button onClick={() => onClose?.()}>
+      <StyledModal
+        ref={(el) => {
+          clickRef.current = el;
+          escRef.current = el;
+        }}
+      >
+        <Button onClick={close}>
           <HiXMark />
         </Button>
-        <div>{children}</div>
+        <div>{cloneElement(children, { onCloseForm: close })}</div>
       </StyledModal>
     </Overlay>,
     document.body
   );
 }
+function Open({ children, opens: opensWindowName }) {
+  const { open } = useModal();
+  return cloneElement(children, { onClick: () => open(opensWindowName) });
+}
+
+Modal.Window = Window;
+Modal.Open = Open;
 export default Modal;
+
+/* 
+
+*/
