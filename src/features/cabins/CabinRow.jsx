@@ -1,10 +1,8 @@
-// import { formatCurrency } from "@/utils/helpers";
-import CreateCabinForm from "@/features/cabins/CreateCabinForm";
+import EditCabin from "@/features/cabins/EditCabin";
 import { useCreateCabin } from "@/features/cabins/useCreateCabin";
 import { useDeleteCabin } from "@/features/cabins/useDeleteCabin";
 import { formatCurrency } from "@/utils/helpers";
-import { useState } from "react";
-import { HiPencil, HiSquare2Stack, HiTrash } from "react-icons/hi2";
+import { HiSquare2Stack, HiTrash } from "react-icons/hi2";
 import styled from "styled-components";
 
 const TableRow = styled.div`
@@ -55,7 +53,6 @@ function CabinRow({ cabin }) {
     discount,
     image,
   } = cabin;
-  const [formOpen, setFormOpen] = useState(false);
 
   const { deleteRow, isDeleting } = useDeleteCabin();
   const { createCabin, isCreatingCabin } = useCreateCabin();
@@ -68,6 +65,7 @@ function CabinRow({ cabin }) {
       image,
     });
   }
+  const isLoading = isCreatingCabin || isDeleting;
   return (
     <>
       <TableRow>
@@ -77,20 +75,17 @@ function CabinRow({ cabin }) {
         <Price>{formatCurrency(regularprice)}</Price>
         <Discount>{discount}</Discount>
         <div>
-          <button disabled={isDeleting} onClick={() => deleteRow(cabinId)}>
+          <button disabled={isLoading} onClick={() => deleteRow(cabinId)}>
             <HiTrash />
           </button>
-          <button onClick={() => setFormOpen(true)}><HiPencil /></button>
-          <button onClick={handleCreateCabin}><HiSquare2Stack /></button>
+          <EditCabin cabin={cabin} />
+          <button disabled={isLoading} onClick={handleCreateCabin}>
+            <HiSquare2Stack />
+          </button>
         </div>
       </TableRow>
-      {formOpen && (
-        <CreateCabinForm
-          curCabin={cabin}
-          onCloseForm={() => setFormOpen(false)}
-        />
-      )}
     </>
   );
 }
+
 export default CabinRow;
