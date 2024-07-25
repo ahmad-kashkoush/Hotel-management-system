@@ -3,6 +3,7 @@ import CabinTable from "@/features/cabins/CabinTable";
 import CreateCabinForm from "@/features/cabins/CreateCabinForm";
 import styled from "styled-components";
 import { Button, Heading, Row } from "@/ui";
+import AddCabin from "@/pages/AddCabin";
 
 const Overlay = styled.div`
   position: fixed;
@@ -11,18 +12,11 @@ const Overlay = styled.div`
   translate: -50% -50%;
 `;
 function Cabins() {
-  const [openForm, setOpenForm] = useState(false);
-
   return (
     <Row>
       <Heading as="h1">All cabins</Heading>
       <CabinTable />
-      <Button onClick={() => setOpenForm(true)}>create cabin</Button>
-      {openForm && (
-        <Overlay>
-          <CreateCabinForm onCloseForm={() => setOpenForm(false)} />
-        </Overlay>
-      )}
+      <AddCabin />
     </Row>
   );
 }
