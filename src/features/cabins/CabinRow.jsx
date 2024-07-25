@@ -1,6 +1,7 @@
 import EditCabin from "@/features/cabins/EditCabin";
 import { useCreateCabin } from "@/features/cabins/useCreateCabin";
 import { useDeleteCabin } from "@/features/cabins/useDeleteCabin";
+import { ConfirmDelete, Modal } from "@/ui";
 import { formatCurrency } from "@/utils/helpers";
 import { HiSquare2Stack, HiTrash } from "react-icons/hi2";
 import styled from "styled-components";
@@ -58,7 +59,7 @@ function CabinRow({ cabin }) {
   const { createCabin, isCreatingCabin } = useCreateCabin();
   function handleCreateCabin() {
     createCabin({
-      name,
+      name: `copy of ${name}`,
       maxcapacity,
       regularprice,
       discount,
@@ -75,9 +76,20 @@ function CabinRow({ cabin }) {
         <Price>{formatCurrency(regularprice)}</Price>
         <Discount>{discount}</Discount>
         <div>
-          <button disabled={isLoading} onClick={() => deleteRow(cabinId)}>
-            <HiTrash />
-          </button>
+          <Modal>
+            <Modal.Open opens="delete-cabin">
+              <button>
+                <HiTrash />
+              </button>
+            </Modal.Open>
+            <Modal.Window name="delete-cabin">
+              <ConfirmDelete
+                resourceName={name}
+                disabled={isLoading}
+                onConfirm={() => deleteRow(cabinId)}
+              />
+            </Modal.Window>
+          </Modal>
           <EditCabin cabin={cabin} />
           <button disabled={isLoading} onClick={handleCreateCabin}>
             <HiSquare2Stack />
