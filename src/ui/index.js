@@ -30,3 +30,4 @@ export { default as Table } from './Table'
 export { default as TableOperations } from './TableOperations'
 export { default as Tag } from './Tag'
 export { default as Textarea } from './Textarea'
+export { default as SortBy } from "./SortBy"

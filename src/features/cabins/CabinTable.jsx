@@ -7,16 +7,30 @@ import { useSearchParams } from "react-router-dom";
 function CabinTable() {
   const { cabins: allCabins, isLoading } = useGetCabins();
   const [searchParameters] = useSearchParams();
-  const filterValue = searchParameters.get("discount");
 
   if (isLoading) return <Spinner />;
+  const filterValue = searchParameters.get("discount");
   const filterCondition = (item) => {
     if (filterValue === "with_discount") return item.discount > 0;
     if (filterValue === "without_discount")
       return item.discount < 1 || !item.discount;
     return true;
   };
-  const cabins = allCabins.filter((item) => filterCondition(item));
+  const sortValue = searchParameters.get("sort");
+  const compareFn = (x, y) => {
+    const [field, dir] = sortValue.split("-");
+    const modifier = dir === "asc" ? 1 : -1;
+    if (field === "name")
+      return (
+        x[field].localeCompare(y[field], undefined, {
+          sensitivity: "base",
+        }) * modifier
+      );
+    return (x[field] - y[field]) * modifier;
+  };
+  const cabins = allCabins
+    .filter((item) => filterCondition(item))
+    .sort(compareFn);
 
   return (
     <Table columns="0.6fr 1.8fr 2.2fr 1fr 1fr 1fr">
