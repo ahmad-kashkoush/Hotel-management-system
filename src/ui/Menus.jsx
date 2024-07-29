@@ -106,7 +106,14 @@ function Menu({ children }) {
 function List({ id, children }) {
   const { openId, position, close } = useMenus();
 
-  const { ref: clickRef } = useOutsideClick(close, true);
+  const { ref: clickRef } = useOutsideClick(function handler(e) {
+    // do nothing on clicking menu toggle
+    const ele = e.target
+      .closest("button")
+      ?.classList?.contains("toggle-context");
+    if (ele) return;
+    close();
+  });
   const { ref: escRef } = useEscKeyDown(close);
 
   if (openId !== id || openId === "") return null;

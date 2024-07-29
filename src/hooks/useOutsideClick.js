@@ -5,7 +5,7 @@ function useOutsideClick(handler) {
     useEffect(() => {
         const callback = (e) => {
             if (ref.current && !ref.current.contains(e.target)) {
-                handler();
+                handler(e);
             }
         };
         document.addEventListener("click", callback, true);
