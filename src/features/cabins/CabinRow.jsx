@@ -2,11 +2,10 @@ import EditCabin from "@/features/cabins/EditCabin";
 import { useCreateCabin } from "@/features/cabins/useCreateCabin";
 import { useDeleteCabin } from "@/features/cabins/useDeleteCabin";
 import { ConfirmDelete, Modal, Table } from "@/ui";
+import Menus from "@/ui/Menus";
 import { formatCurrency } from "@/utils/helpers";
-import { HiSquare2Stack, HiTrash } from "react-icons/hi2";
+import { HiPencil, HiSquare2Stack, HiTrash } from "react-icons/hi2";
 import styled from "styled-components";
-
-
 
 const Img = styled.img`
   display: block;
@@ -67,11 +66,6 @@ function CabinRow({ cabin }) {
         <Discount>{discount}</Discount>
         <div>
           <Modal>
-            <Modal.Open opens="delete-cabin">
-              <button>
-                <HiTrash />
-              </button>
-            </Modal.Open>
             <Modal.Window name="delete-cabin">
               <ConfirmDelete
                 resourceName={name}
@@ -79,11 +73,27 @@ function CabinRow({ cabin }) {
                 onConfirm={() => deleteRow(cabinId)}
               />
             </Modal.Window>
+            <EditCabin cabin={cabin} />
+
+            <Menus.Menu>
+              <Menus.Toggle opens={cabinId} />
+              <Menus.List id={cabinId}>
+                <Modal.Open opens="delete-cabin">
+                  <Menus.Button icon={<HiTrash />}>Delete</Menus.Button>
+                </Modal.Open>
+                <Menus.Button
+                  disabled={isLoading}
+                  onClick={handleCreateCabin}
+                  icon={<HiSquare2Stack />}
+                >
+                  Duplicate
+                </Menus.Button>
+                <Modal.Open opens="edit-cabin">
+                  <Menus.Button icon={<HiPencil />}>Edit</Menus.Button>
+                </Modal.Open>
+              </Menus.List>
+            </Menus.Menu>
           </Modal>
-          <EditCabin cabin={cabin} />
-          <button disabled={isLoading} onClick={handleCreateCabin}>
-            <HiSquare2Stack />
-          </button>
         </div>
       </Table.Row>
     </>

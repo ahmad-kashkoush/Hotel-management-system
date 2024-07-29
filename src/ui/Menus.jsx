@@ -1,3 +1,5 @@
+import { useEscKeyDown } from "@/hooks/useEscKeyDown";
+import { useOutsideClick } from "@/hooks/useOutsideClick";
 import { createContext, useContext, useState } from "react";
 import { createPortal } from "react-dom";
 import { HiEllipsisVertical } from "react-icons/hi2";
@@ -30,13 +32,14 @@ const StyledToggle = styled.button`
 
 const StyledList = styled.ul`
   position: fixed;
-
   background-color: var(--color-grey-0);
   box-shadow: var(--shadow-md);
   border-radius: var(--border-radius-md);
 
   right: ${(props) => props.position.x}px;
   top: ${(props) => props.position.y}px;
+  /* right: 13px;
+  top: 26px; */
 `;
 
 const StyledButton = styled.button`
@@ -71,26 +74,28 @@ function Menus({ children }) {
   const [position, setPosition] = useState({ x: 20, y: 20 });
   const open = setOpenId;
   const close = () => setOpenId("");
+  const toggle = (id) =>
+    setOpenId((cur) => (cur === "" || cur !== id ? id : ""));
   return (
     <MenusContext.Provider
-      value={{ openId, open, close, position, setPosition }}
+      value={{ openId, open, close, toggle, position, setPosition }}
     >
       {children}
     </MenusContext.Provider>
   );
 }
 function Toggle({ opens }) {
-  const { open, close, openId, setPosition } = useMenus();
+  const { toggle, setPosition } = useMenus();
   function handleClick(e) {
-    if (openId === opens) close();
-    else {
-      open(opens);
-      const diamensions = e.target.closest("button").getBoundingClientRect();
-      setPosition({ x: diamensions.x, y: diamensions.y });
-    }
+    const rect = e.target.closest("button").getBoundingClientRect();
+    setPosition({
+      x: window.innerWidth - rect.width - rect.x,
+      y: rect.y + rect.height + 8,
+    });
+    toggle(opens);
   }
   return (
-    <StyledToggle onClick={handleClick}>
+    <StyledToggle className="toggle-context" onClick={handleClick}>
       <HiEllipsisVertical />
     </StyledToggle>
   );
@@ -99,16 +104,40 @@ function Menu({ children }) {
   return <StyledMenu>{children}</StyledMenu>;
 }
 function List({ id, children }) {
-  const { openId, position } = useMenus();
+  const { openId, position, close } = useMenus();
+
+  const { ref: clickRef } = useOutsideClick(close, true);
+  const { ref: escRef } = useEscKeyDown(close);
+
   if (openId !== id || openId === "") return null;
   return createPortal(
-    <StyledList position={position}>{children}</StyledList>,
+    <StyledList
+      ref={(el) => {
+        clickRef.current = el;
+        escRef.current = el;
+      }}
+      position={position}
+    >
+      {children}
+    </StyledList>,
     document.body
   );
 }
-function Button({ children }) {
+function Button({ children, icon, onClick }) {
   const { close } = useMenus();
-  return <li onClick={() => close()}>{children}</li>;
+  function handleClick() {
+    onClick?.();
+    close();
+  }
+  return (
+    <li>
+      <StyledButton onClick={handleClick}>
+        {icon}
+        <span>{children}</span>
+      </StyledButton>
+      ;
+    </li>
+  );
 }
 
 Menus.Button = Button;
