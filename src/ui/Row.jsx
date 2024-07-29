@@ -6,14 +6,19 @@ const type = {
     align-items: center;
   `,
   vertical: css`
-    flex-direction:column;
+    flex-direction: column;
     gap: 1.6rem;
   `,
 };
 
-const Row = styled.div`
+const StyledRow = styled.div`
   display: flex;
-  ${(props) => type[props.type || "vertical"]}
+  ${(props) => type[props.type]}
 `;
-
+StyledRow.defaultProps = {
+  type: "vertical",
+};
+function Row({ children, type }) {
+  return <StyledRow type={type}>{children}</StyledRow>;
+}
 export default Row;
