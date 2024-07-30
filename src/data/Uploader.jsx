@@ -46,51 +46,52 @@ async function createBookings() {
     .from("guests")
     .select("id")
     .order("id");
-  const allGuestIds = guestsIds.map((cabin) => cabin.id);
+  const mapToId = (data) => data.map((item) => item.id);
+  const allGuestIds = mapToId(guestsIds);
   const { data: cabinsIds } = await supabase
     .from("cabins")
     .select("id")
     .order("id");
-  const allCabinIds = cabinsIds.map((cabin) => cabin.id);
+  const allCabinIds = mapToId(cabinsIds);
 
   const finalBookings = bookings.map((booking) => {
     // Here relying on the order of cabins, as they don't have and ID yet
-    const cabin = cabins.at(booking.cabinId - 1);
-    const numNights = subtractDates(booking.endDate, booking.startDate);
-    const cabinPrice = numNights * (cabin.regularPrice - cabin.discount);
-    const extrasPrice = booking.hasBreakfast
-      ? numNights * 15 * booking.numGuests
+    const cabin = cabins.at(booking.cabinid - 1);
+    const numnights = subtractDates(booking.departuredate, booking.arrivaldate);
+    const cabinprice = numnights * (cabin.regularprice - cabin.discount);
+    const extrasprice = booking.hasbreakfast
+      ? numnights * 15 * booking.numguests
       : 0; // hardcoded breakfast price
-    const totalPrice = cabinPrice + extrasPrice;
+    const totalprice = cabinprice + extrasprice;
 
     let status;
     if (
-      isPast(new Date(booking.endDate)) &&
-      !isToday(new Date(booking.endDate))
+      isPast(new Date(booking.departuredate)) &&
+      !isToday(new Date(booking.departuredate))
     )
       status = "checked-out";
     if (
-      isFuture(new Date(booking.startDate)) ||
-      isToday(new Date(booking.startDate))
+      isFuture(new Date(booking.arrivaldate)) ||
+      isToday(new Date(booking.arrivaldate))
     )
       status = "unconfirmed";
     if (
-      (isFuture(new Date(booking.endDate)) ||
-        isToday(new Date(booking.endDate))) &&
-      isPast(new Date(booking.startDate)) &&
-      !isToday(new Date(booking.startDate))
+      (isFuture(new Date(booking.departuredate)) ||
+        isToday(new Date(booking.departuredate))) &&
+      isPast(new Date(booking.arrivaldate)) &&
+      !isToday(new Date(booking.arrivaldate))
     )
       status = "checked-in";
 
     return {
       ...booking,
-      numNights,
-      cabinPrice,
-      extrasPrice,
-      totalPrice,
-      guestId: allGuestIds.at(booking.guestId - 1),
-      cabinId: allCabinIds.at(booking.cabinId - 1),
-      status,
+      numnights,
+      cabinprice,
+      extrasprice,
+      totalprice,
+      guestid: allGuestIds.at(booking.guestid - 1),
+      cabinid: allCabinIds.at(booking.cabinid - 1),
+      status: status || "confirmed",
     };
   });
 
