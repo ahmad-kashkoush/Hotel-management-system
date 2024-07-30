@@ -18,9 +18,10 @@ function CabinTable() {
   };
   const sortValue = searchParameters.get("sort");
   const compareFn = (x, y) => {
+    if (!sortValue) return x.regularprice - y.regularprice;
     const [field, dir] = sortValue.split("-");
     const modifier = dir === "asc" ? 1 : -1;
-    if (field === "name")
+    if (typeof x[field] === "string")
       return (
         x[field].localeCompare(y[field], undefined, {
           sensitivity: "base",
