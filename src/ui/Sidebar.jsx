@@ -1,3 +1,4 @@
+import Uploader from "@/data/Uploader";
 import { MainNav } from "@/ui";
 import styled from "styled-components";
 
@@ -19,6 +20,7 @@ function Sidebar() {
     <StyleSidebar>
       <Logo>Nostalgic</Logo>
       <MainNav />
+      <Uploader />
     </StyleSidebar>
   );
 }
