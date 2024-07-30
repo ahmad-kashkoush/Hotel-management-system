@@ -1,9 +1,38 @@
+import { Menus, Spinner, Table } from "@/ui";
 import BookingRow from "./BookingRow";
-import Table from "../../ui/Table";
-import Menus from "../../ui/Menus";
+import useGetBookings from "@/features/bookings/useGetBookings";
+import useGetBookingById from "@/features/bookings/useGetBookingById";
+import { useGetCabins } from "@/features/cabins/useGetCabins";
+import { useSearchParams } from "react-router-dom";
+
+const compare = (a, b, type = "any") => {
+  if (type === "dateString") return new Date(a) - new Date(b);
+  if (type === "string")
+    return a.localeCompare(b, undefined, {
+      sensitivity: "base",
+    });
+  if (type === "number") return a - b;
+};
 
 function BookingTable() {
-  const bookings = [];
+  const { bookings: allBookings, isLoading: isLoadingBookings } =
+    useGetBookings();
+  const [searchParams] = useSearchParams();
+  if (isLoadingBookings) return <Spinner />;
+  const sortValue = searchParams.get("sort");
+  const compareFn = (a, b) => {
+    if (!sortValue) return 1;
+    let [field, dir] = sortValue.split("-");
+    const modifier = dir === "asc" ? 1 : -1;
+    const type = field.includes("Date") ? "dateString" : typeof a[field];
+    return compare(a[field], b[field], type) * modifier;
+  };
+  const filterValue = searchParams.get("status") || "all";
+  const bookings = allBookings
+    .sort(compareFn)
+    .filter(
+      (booking) => booking.status === filterValue || filterValue === "all"
+    );
 
   return (
     <Menus>
