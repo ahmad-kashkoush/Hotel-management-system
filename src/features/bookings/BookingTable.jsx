@@ -2,14 +2,11 @@ import BookingRow from "./BookingRow";
 
 import useGetBookings from "@/features/bookings/useGetBookings";
 import { Menus, Pagination, Spinner, Table } from "@/ui";
-import { usePagination } from "@/ui/Pagination";
 
 function BookingTable() {
-  const { bookings: allBookings, isLoading } = useGetBookings();
-  const { setLen, range } = usePagination();
+  const { bookings: allBookings, isLoading, count } = useGetBookings();
   if (isLoading) return <Spinner />;
-  setLen(allBookings.length);
-  const bookings = allBookings.slice(range.start, range.end);
+  const bookings = allBookings;
   return (
     <Menus>
       <Table columns="0.6fr 2fr 2.4fr 1.4fr 1fr 3.2rem">
@@ -29,13 +26,7 @@ function BookingTable() {
           )}
         />
         <Table.Footer>
-          <Pagination.Wrapper dataLength={allBookings.length}>
-            <Pagination.Page />
-            <Pagination.Buttons>
-              <Pagination.Prev />
-              <Pagination.Next />
-            </Pagination.Buttons>
-          </Pagination.Wrapper>
+          <Pagination count={count} />
         </Table.Footer>
       </Table>
     </Menus>
