@@ -1,14 +1,14 @@
-import { getToday } from "../utils/helpers";
+import { getEndOfPage, getStartOfPage, getToday } from "@/utils/helpers";
 import supabase from "./supabase";
 const map = {
   startDate: "arrivaldate",
   totalPrice: "totalprice"
 }
-export async function getBookings({ filter, sortBy }) {
+export async function getBookings({ filter, sortBy, page }) {
 
   let query = supabase
     .from("bookings")
-    .select("id,startDate:arrivaldate, created_at:createdat, endDate:departuredate, numNights:numnights, numGuests:numguests, totalPrice:totalprice, status, cabins(name), guests(fullname, email)");
+    .select("id,startDate:arrivaldate, created_at:createdat, endDate:departuredate, numNights:numnights, numGuests:numguests, totalPrice:totalprice, status, cabins(name), guests(fullname, email)", {count:"exact"});
 
   if (filter)
     query = query[filter.methodName](filter.field, filter.value);
@@ -16,7 +16,11 @@ export async function getBookings({ filter, sortBy }) {
   if (sortBy)
     query = query.order(map[sortBy.field], { ascending: sortBy.dir === "asc" });
 
-  const { data: bookings, error } = await query;
+
+  if (page)
+    query = query.range(getStartOfPage(page-1), getEndOfPage(page-1));
+
+  const { data: bookings, count, error } = await query;
 
   if (error) throw new Error("getBookings: error");
 
@@ -25,7 +29,8 @@ export async function getBookings({ filter, sortBy }) {
     throw new Error("Bookings not found");
   }
 
-  return bookings;
+
+  return {bookings, count};
 }
 export async function getBooking(id) {
   const { data, error } = await supabase
