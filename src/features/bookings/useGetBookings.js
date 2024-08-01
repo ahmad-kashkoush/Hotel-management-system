@@ -8,19 +8,30 @@ function useGetBookings() {
     // build filter objects and values
     const sortValue = searchParams.get("sort");
     const statusValue = searchParams.get("status") || "all";
+    const pageValue = +searchParams.get("page") || 1;
+
+
     const filter = !statusValue || statusValue === "all" ?
         null :
         { field: "status", value: statusValue, methodName: "eq" }
+
+
 
     const [field, dir] = sortValue?.split("-") || [];
     const sortBy = !sortValue
         ? null :
         { field, dir }
-    const { data: bookings, isLoading } = useQuery({
-        queryKey: ["bookings", statusValue, sortValue],
-        queryFn: () => getBookings({ filter, sortBy })
+
+
+
+    const {
+        data: { bookings, count } = {},
+        isLoading
+    } = useQuery({
+        queryKey: ["bookings", statusValue, sortValue, pageValue],
+        queryFn: () => getBookings({ filter, sortBy, page: pageValue })
     });
-    return { bookings, isLoading };
+    return { bookings, count, isLoading };
 }
 export default useGetBookings;
 

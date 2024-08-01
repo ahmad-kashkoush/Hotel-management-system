@@ -1,12 +1,12 @@
 import BookingRow from "./BookingRow";
 
 import useGetBookings from "@/features/bookings/useGetBookings";
-import { Menus, Spinner, Table } from "@/ui";
+import { Menus, Pagination, Spinner, Table } from "@/ui";
 
 function BookingTable() {
-  // const bookings = [];
-  const { bookings, isLoading } = useGetBookings();
+  const { bookings: allBookings, isLoading, count } = useGetBookings();
   if (isLoading) return <Spinner />;
+  const bookings = allBookings;
   return (
     <Menus>
       <Table columns="0.6fr 2fr 2.4fr 1.4fr 1fr 3.2rem">
@@ -25,6 +25,9 @@ function BookingTable() {
             <BookingRow key={booking.id} booking={booking} />
           )}
         />
+        <Table.Footer>
+          <Pagination count={count} />
+        </Table.Footer>
       </Table>
     </Menus>
   );

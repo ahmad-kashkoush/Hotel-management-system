@@ -3,7 +3,6 @@ import BookingTableOperations from "@/features/bookings/BookingTableOperations";
 import { Heading, Row } from "@/ui";
 
 function Bookings() {
-  
   return (
     <Row>
       <Row type="horizontal">
@@ -11,7 +10,6 @@ function Bookings() {
         <BookingTableOperations />
       </Row>
       <BookingTable />
-      
     </Row>
   );
 }

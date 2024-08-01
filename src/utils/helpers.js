@@ -1,3 +1,4 @@
+import { PAGE_SIZE } from '@/utils/constants';
 import { differenceInDays, formatDistance, parseISO } from 'date-fns';
 
 // We want to make this function work for both Date objects and strings (which come from Supabase)
@@ -27,3 +28,6 @@ export const formatCurrency = (value) =>
   new Intl.NumberFormat('en', { style: 'currency', currency: 'USD' }).format(
     value
   );
+
+export const getStartOfPage = (page) => page * PAGE_SIZE;
+export const getEndOfPage = (page) => getStartOfPage(page) + PAGE_SIZE - 1;
