@@ -86,7 +86,7 @@ function Row({ children }) {
   );
 }
 function Body({ children, render, data }) {
-  if (data.length === 0) return <Empty>not data filled</Empty>;
+  if (!data || data.length === 0) return <Empty>not data filled</Empty>;
   return <StyledBody>{data.map(render)}</StyledBody>;
 }
 function Footer({ children }) {
