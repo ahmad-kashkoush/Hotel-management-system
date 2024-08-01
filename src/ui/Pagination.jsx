@@ -1,5 +1,7 @@
-import { createContext, useContext, useState } from "react";
+import { PAGE_SIZE } from "@/utils/constants";
+import { getEndOfPage, getStartOfPage } from "@/utils/helpers";
 import { HiArrowLeft, HiArrowRight } from "react-icons/hi2";
+import { useSearchParams } from "react-router-dom";
 import styled from "styled-components";
 
 const StyledPagination = styled.div`
@@ -18,7 +20,7 @@ const P = styled.p`
   }
 `;
 
-const StyledButtons = styled.div`
+const Buttons = styled.div`
   display: flex;
   gap: 0.6rem;
 `;
@@ -57,80 +59,43 @@ const PaginationButton = styled.button`
     color: var(--color-brand-50);
   }
 `;
-const PAGE_SIZE = 5;
-const paginationContext = createContext();
-export const usePagination = () => useContext(paginationContext);
-function Pagination({ children }) {
+
+function Pagination({ count = 40 }) {
   // constants
-  const lenPerPage = PAGE_SIZE;
+  // others
+  const numPages = Math.ceil(count / PAGE_SIZE);
   // state
-  const [len, setLen] = useState(0);
-  const [curPage, setCurPage] = useState(0);
-  // Helper Methods
-  const getStartOfPage = () => lenPerPage * curPage;
-  const getEndOfPage = () => getStartOfPage() + lenPerPage - 1;
+  const [searchParams, setSearchParams] = useSearchParams();
+  const page = +searchParams.get("page") || 1;
 
-  const numPages = Math.ceil(len / lenPerPage);
-  const handleNextClick = () =>
-    setCurPage((cur) => (cur >= numPages - 1 ? cur : cur + 1));
-  const handlePrevClick = () => setCurPage((cur) => (cur < 1 ? cur : cur - 1));
+  function handleNextClick() {
+    const next = page >= numPages ? page : page + 1;
+    searchParams.set("page", next);
+    setSearchParams(searchParams);
+  }
+  function handlePrevClick() {
+    const prev = page <= 1 ? page : page - 1;
+    searchParams.set("page", prev);
+    setSearchParams(searchParams);
+  }
   return (
-    <paginationContext.Provider
-      value={{
-        setLen,
-        handleNextClick,
-        handlePrevClick,
-        numPages,
-        curPage,
-        range: { start: getStartOfPage(), end: getEndOfPage() },
-        disableNext: curPage >= numPages - 1,
-        disablePrev: curPage < 1,
-      }}
-    >
-      {children}
-    </paginationContext.Provider>
-  );
-}
-function Wrapper({ children, dataLength }) {
-  const { setLen, numPages } = usePagination();
-  setLen(dataLength || 0);
-  if (numPages < 2) return null;
-  return <StyledPagination>{children}</StyledPagination>;
-}
-function Page() {
-  const {
-    range: { start, end },
-  } = usePagination();
-  return (
-    <P>
-      showing {start} to {end} of results
-    </P>
-  );
-}
-function Next() {
-  const { handleNextClick, disableNext } = usePagination();
-  return (
-    <PaginationButton onClick={handleNextClick} disabled={disableNext}>
-      <HiArrowRight />
-    </PaginationButton>
+    <StyledPagination>
+      <P>
+        showing {getStartOfPage(page - 1)} to {getEndOfPage(page - 1)} of
+        results
+      </P>
+      <Buttons>
+        <PaginationButton onClick={handlePrevClick}>
+          <HiArrowLeft />
+          <span>Previous</span>
+        </PaginationButton>
+        <PaginationButton onClick={handleNextClick}>
+          <span>Next</span>
+          <HiArrowRight />
+        </PaginationButton>
+      </Buttons>
+    </StyledPagination>
   );
 }
 
-function Prev() {
-  const { handlePrevClick, disablePrev } = usePagination();
-  return (
-    <PaginationButton onClick={handlePrevClick} disabled={disablePrev}>
-      <HiArrowLeft />
-    </PaginationButton>
-  );
-}
-function Buttons({ children }) {
-  return <StyledButtons>{children}</StyledButtons>;
-}
-
-Pagination.Next = Next;
-Pagination.Prev = Prev;
-Pagination.Page = Page;
-Pagination.Wrapper = Wrapper;
-Pagination.Buttons = Buttons;
 export default Pagination;
