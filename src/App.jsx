@@ -1,3 +1,4 @@
+import BookingDetail from "@/features/bookings/BookingDetail";
 import Account from "@/pages/Account";
 import Bookings from "@/pages/Bookings";
 import Cabins from "@/pages/Cabins";
@@ -29,7 +30,7 @@ const router = createBrowserRouter([
       { path: "/dashboard", element: <Dashboard /> },
       // bookings
       { path: "/bookings", element: <Bookings /> },
-      { path: "/bookings/:id", element: <Bookings /> },
+      { path: "/bookings/:id", element: <BookingDetail /> },
       // Cabins
       { path: "/cabins", element: <Cabins /> },
       { path: "/cabins/:id", element: <Cabins /> },
