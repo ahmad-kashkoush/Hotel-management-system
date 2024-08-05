@@ -38,8 +38,8 @@ function CabinRow({ cabin }) {
   const {
     id: cabinId,
     name,
-    maxcapacity,
-    regularprice,
+    maxCapacity,
+    regularPrice,
     discount,
     image,
   } = cabin;
@@ -49,8 +49,8 @@ function CabinRow({ cabin }) {
   function handleCreateCabin() {
     createCabin({
       name: `copy of ${name}`,
-      maxcapacity,
-      regularprice,
+      maxCapacity,
+      regularPrice,
       discount,
       image,
     });
@@ -61,8 +61,8 @@ function CabinRow({ cabin }) {
       <Table.Row>
         <Img src={image} />
         <Cabin>{name}</Cabin>
-        <div>fits up to {maxcapacity} guests</div>
-        <Price>{formatCurrency(regularprice)}</Price>
+        <div>fits up to {maxCapacity} guests</div>
+        <Price>{formatCurrency(regularPrice)}</Price>
         <Discount>{discount}</Discount>
         <div>
           <Modal>

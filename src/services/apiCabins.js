@@ -27,7 +27,13 @@ export async function insertCabin({ cabinData, previousImage = "", id = null }) 
         }).eq('id', id);
     // console.log(query);
     const { data, error } = await query.select().single();
-    if (error) throw new Error("createCabin: error creating cabin");
+
+    
+    if (error) {
+        const errorMessage = `createCabin: error ${id ? "updating" : "creating"} cabin`
+        console.error(error);
+        throw new Error(errorMessage);
+    }
     if (!hasImagePath) {
         const { error: imageError } = await supabase
             .storage

@@ -66,11 +66,11 @@ function CreateCabinForm({ curCabin = {}, onCloseForm }) {
         />
       </FormRow>
 
-      <FormRow label="Maximum capacity" error={errors?.maxcapacity?.message}>
+      <FormRow label="Maximum capacity" error={errors?.maxCapcity?.message}>
         <Input
           type="number"
           id="maxCapacity"
-          {...register("maxcapacity", {
+          {...register("maxCapacity", {
             required: "this field is required",
             min: {
               value: 1,
@@ -80,15 +80,15 @@ function CreateCabinForm({ curCabin = {}, onCloseForm }) {
         />
       </FormRow>
 
-      <FormRow label="Regular price" error={errors?.regularprice?.message}>
+      <FormRow label="Regular price" error={errors?.regularPrice?.message}>
         <Input
           type="number"
           id="regularPrice"
-          {...register("regularprice", {
+          {...register("regularPrice", {
             required: "this field is required",
             min: {
               value: 1,
-              message: "capacity is less than 1",
+              message: "Price is less than 1",
             },
           })}
         />
@@ -102,7 +102,7 @@ function CreateCabinForm({ curCabin = {}, onCloseForm }) {
           {...register("discount", {
             required: "this field is required",
             validate: (value) =>
-              +getValues().regularprice >= +value ||
+              +getValues().regularPrice >= +value ||
               "discount should be less than regular price",
           })}
         />
