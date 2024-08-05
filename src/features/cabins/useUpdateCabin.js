@@ -1,4 +1,5 @@
 import { insertCabin } from "@/services/apiCabins";
+import { QUERY_KEYS } from "@/utils/constants";
 import { useMutation, useQueryClient } from "@tanstack/react-query";
 import toast from "react-hot-toast";
 
@@ -14,7 +15,7 @@ export function useUpdateCabin() {
         onSuccess: () => {
             toast.success("cabin successfully updated");
             queryClient.invalidateQueries({
-                queryKey: ["cabins"],
+                queryKey: [QUERY_KEYS.CABINS],
             });
             // passed to mutate
             // reset();

@@ -1,4 +1,5 @@
 import { insertCabin } from "@/services/apiCabins";
+import { QUERY_KEYS } from "@/utils/constants";
 import { useMutation, useQueryClient } from "@tanstack/react-query";
 import toast from "react-hot-toast";
 
@@ -9,7 +10,7 @@ export function useCreateCabin() {
         onSuccess: () => {
             toast.success("cabin successfully Created");
             queryClient.invalidateQueries({
-                queryKey: ["cabins"],
+                queryKey: [QUERY_KEYS.CABINS],
             });
             // reset & closeForm will be passed on mutate call options 
         },
