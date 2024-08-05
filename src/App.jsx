@@ -2,6 +2,7 @@ import BookingDetail from "@/features/bookings/BookingDetail";
 import Account from "@/pages/Account";
 import Bookings from "@/pages/Bookings";
 import Cabins from "@/pages/Cabins";
+import Checkin from "@/pages/Checkin";
 import Dashboard from "@/pages/Dashboard";
 import Login from "@/pages/Login";
 import PageNotFound from "@/pages/PageNotFound";
@@ -31,6 +32,7 @@ const router = createBrowserRouter([
       // bookings
       { path: "/bookings", element: <Bookings /> },
       { path: "/bookings/:id", element: <BookingDetail /> },
+      { path: "/checkin/:id", element: <Checkin /> },
       // Cabins
       { path: "/cabins", element: <Cabins /> },
       { path: "/cabins/:id", element: <Cabins /> },
