@@ -4,20 +4,27 @@ import useSettings from "@/features/settings/useSettings";
 import useUpdateSettings from "@/features/settings/useUpdateSettings";
 
 function UpdateSettingsForm() {
-  const [minNights, setMinNights] = useState(0);
-  const [maxNights, setMaxNights] = useState(0);
-  const [maxGuests, setMaxGuests] = useState(0);
-  const [breakfastPrice, setBreakfastPrice] = useState(0);
+  const [minNights, setMinNights] = useState();
+  const [maxNights, setMaxNights] = useState();
+  const [maxGuests, setMaxGuests] = useState();
+  const [breakfastPrice, setBreakfastPrice] = useState();
 
   const { settings, isLoading: isLoadingSettings } = useSettings();
   const { updateSettings, isLoading: isUpdating } = useUpdateSettings();
 
+  const {
+    minBookingLength,
+    maxBookingLength,
+    maxGuestsPerBooking,
+    breakfastPrice: curBreakfast,
+  } = settings||{};
+
   useEffect(() => {
-    setMinNights(settings?.minBookingLength);
-    setMaxNights(settings?.maxBookingLength);
-    setMaxGuests(settings?.maxGuestsPerBooking);
-    setBreakfastPrice(settings?.breakfastPrice);
-  }, [settings]);
+    setMinNights(minBookingLength);
+    setMaxNights(maxBookingLength);
+    setMaxGuests(maxGuestsPerBooking);
+    setBreakfastPrice(curBreakfast);
+  }, [minBookingLength, maxBookingLength, maxGuestsPerBooking, curBreakfast]);
   if (isLoadingSettings) return <Spinner />;
 
   function handleClick(e) {
