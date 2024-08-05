@@ -45,6 +45,7 @@ function Filter({ filterField, filterOptions }) {
   function handleClick(e) {
     const filterValue = e.target.dataset.filter;
     searchParams.set(filterField, filterValue);
+    searchParams.set("page", 1);
     setSearchParams(searchParams);
   }
   const active = searchParams.get(filterField) || "all";
