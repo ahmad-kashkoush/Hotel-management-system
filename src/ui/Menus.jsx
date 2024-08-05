@@ -130,7 +130,7 @@ function List({ id, children }) {
     document.body
   );
 }
-function Button({ children, icon, onClick }) {
+function Button({ children, icon, onClick, disabled = false }) {
   const { close } = useMenus();
   function handleClick() {
     onClick?.();
@@ -138,11 +138,10 @@ function Button({ children, icon, onClick }) {
   }
   return (
     <li>
-      <StyledButton onClick={handleClick}>
+      <StyledButton onClick={handleClick} disabled={disabled}>
         {icon}
         <span>{children}</span>
       </StyledButton>
-      ;
     </li>
   );
 }
