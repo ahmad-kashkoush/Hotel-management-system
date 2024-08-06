@@ -1,4 +1,3 @@
-import GlobalStyles from "@/styles/GlobalStyles";
 import { Header, Sidebar } from "@/ui";
 import { Outlet } from "react-router";
 import styled from "styled-components";
@@ -25,7 +24,6 @@ const Container = styled.div`
 function AppLayout() {
   return (
     <>
-      <GlobalStyles />
       <StyledApp>
         <Sidebar />
         <Header />

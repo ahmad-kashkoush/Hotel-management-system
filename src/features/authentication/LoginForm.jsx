@@ -1,8 +1,6 @@
+import { login } from "@/services/apiAuth";
+import { Button, Form, FormRowVertical, Input } from "@/ui";
 import { useState } from "react";
-import Button from "../../ui/Button";
-import Form from "../../ui/Form";
-import Input from "../../ui/Input";
-import FormRowVertical from "../../ui/FormRowVertical";
 
 function LoginForm() {
   const [email, setEmail] = useState("");

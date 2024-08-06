@@ -1,13 +1,7 @@
 import Uploader from "@/data/Uploader";
-import { MainNav } from "@/ui";
+import { Logo, MainNav } from "@/ui";
 import styled from "styled-components";
 
-const Logo = styled.h1`
-  letter-spacing: -5px;
-  font-style: italic;
-  text-align: center;
-  color: var(--color-silver-700);
-`;
 const StyleSidebar = styled.aside`
   grid-row: 1/-1;
   padding: 3.2rem 2.4rem;
@@ -18,7 +12,7 @@ const StyleSidebar = styled.aside`
 function Sidebar() {
   return (
     <StyleSidebar>
-      <Logo>Nostalgic</Logo>
+      <Logo />
       <MainNav />
       <Uploader />
     </StyleSidebar>
