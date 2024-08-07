@@ -9,6 +9,7 @@ import PageNotFound from "@/pages/PageNotFound";
 import Settings from "@/pages/Settings";
 import NewUsers from "@/pages/Users";
 import { AppLayout } from "@/ui";
+import ProtectedRoute from "@/ui/ProtectedRoute";
 
 import { QueryClient, QueryClientProvider } from "@tanstack/react-query";
 import { ReactQueryDevtools } from "@tanstack/react-query-devtools";
@@ -21,7 +22,11 @@ import {
 
 const router = createBrowserRouter([
   {
-    element: <AppLayout />,
+    element: (
+      <ProtectedRoute>
+        <AppLayout />
+      </ProtectedRoute>
+    ),
     path: "/",
     errorElement: <PageNotFound />,
     children: [

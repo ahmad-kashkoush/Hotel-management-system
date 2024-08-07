@@ -5,7 +5,7 @@ import toast from "react-hot-toast";
 
 export function useUpdateCabin() {
     const queryClient = useQueryClient();
-    const { mutate: updateCabin, isLoading: isUpdatingCabin } = useMutation({
+    const { mutate: updateCabin, isPending: isUpdatingCabin } = useMutation({
         mutationFn: ({ updatedCabin, editId, curImage }) =>
             insertCabin({
                 id: editId,
