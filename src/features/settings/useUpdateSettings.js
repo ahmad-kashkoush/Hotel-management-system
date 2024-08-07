@@ -5,7 +5,7 @@ import { useMutation, useQueryClient } from "@tanstack/react-query";
 
 function useUpdateSettings() {
     const queryClient = useQueryClient();
-    const { mutate, isLoading } = useMutation({
+    const { mutate, isPending: isLoading } = useMutation({
         mutationFn: updateSetting,
         onSuccess: () => {
             queryClient.invalidateQueries({

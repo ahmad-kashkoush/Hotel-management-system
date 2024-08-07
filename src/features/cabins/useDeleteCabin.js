@@ -6,7 +6,7 @@ import toast from "react-hot-toast";
 export function useDeleteCabin() {
     const queryClient = useQueryClient();
     // deletion
-    const { mutate: deleteRow, isLoading: isDeleting } = useMutation({
+    const { mutate: deleteRow, isPending: isDeleting } = useMutation({
         mutationFn: deleteCabin,
         onSuccess: () => {
             toast.success("cabin successfully deleted");
