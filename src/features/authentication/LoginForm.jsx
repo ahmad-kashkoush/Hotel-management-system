@@ -1,12 +1,23 @@
-import { login } from "@/services/apiAuth";
-import { Button, Form, FormRowVertical, Input } from "@/ui";
+import useLogin from "@/features/authentication/useLogin";
+import { Button, Form, FormRowVertical, Input, SpinnerMini } from "@/ui";
 import { useState } from "react";
 
 function LoginForm() {
-  const [email, setEmail] = useState("");
-  const [password, setPassword] = useState("");
+  const [email, setEmail] = useState("ak@ak.com");
+  const [password, setPassword] = useState("123123");
 
-  function handleSubmit() {}
+  const { login, isPending:isLoading } = useLogin();
+
+  function handleSubmit(e) {
+    e.preventDefault();
+    if (!email || !password) return;
+    login({ email, password }, {
+      onSettled:()=>{
+        setEmail("");
+        setPassword("");
+      }
+    });
+  }
 
   return (
     <Form onSubmit={handleSubmit}>
@@ -17,6 +28,7 @@ function LoginForm() {
           // This makes this form better for password managers
           autoComplete="username"
           value={email}
+          disabled={isLoading}
           onChange={(e) => setEmail(e.target.value)}
         />
       </FormRowVertical>
@@ -26,11 +38,14 @@ function LoginForm() {
           id="password"
           autoComplete="current-password"
           value={password}
+          disabled={isLoading}
           onChange={(e) => setPassword(e.target.value)}
         />
       </FormRowVertical>
       <FormRowVertical>
-        <Button size="large">Login</Button>
+        <Button size="large" disabled={isLoading}>
+          {!isLoading ? "Login" : <SpinnerMini />}
+        </Button>
       </FormRowVertical>
     </Form>
   );
