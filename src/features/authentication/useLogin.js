@@ -8,17 +8,17 @@ function useLogin() {
     //  mutate
     // on sucess
     // on error
-    const queryClient=useQueryClient();
+    const queryClient = useQueryClient();
     const navigate = useNavigate();
     const { mutate: login, isPending, error } = useMutation({
         mutationFn: loginApi,
         onSuccess: (user) => {
             toast.success("Hi,  " + user.email + "  Successfully logged in");
-            navigate("/dashboard");
-            queryClient.setQueriesData(QUERY_KEYS.USERS, user)            
+            navigate("/dashboard", { replace: true });
+            queryClient.setQueriesData(QUERY_KEYS.USERS, user)
 
         },
-        onError: (err) => { 
+        onError: (err) => {
             console.error("Error:" + err.message)
             toast.error("incorrect email or password")
         }

@@ -11,6 +11,18 @@ export async function login({ email, password }) {
     return data.user;
 
 }
+export async function logout() {
+
+    let { error } = await supabase.auth.signOut();
+
+    if (error) {
+        console.error(error.message);
+        throw Error("Logout: Error");
+    }
+
+
+}
+
 export async function getUser() {
 
     const { data: session } = await supabase.auth.getSession();
