@@ -11,4 +11,21 @@ export async function login({ email, password }) {
     return data.user;
 
 }
+export async function getUser() {
+
+    const { data: session } = await supabase.auth.getSession();
+
+    if (!session.session) {
+        return null;
+    }
+
+    const { data, error } = await supabase.auth.getUser();
+
+    if (error) {
+        console.error(error.message);
+        throw new Error("getUser: not getting user");
+    }
+
+    return data?.user;
+
 }
