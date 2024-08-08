@@ -3,20 +3,23 @@ import { Button, Form, FormRowVertical, Input, SpinnerMini } from "@/ui";
 import { useState } from "react";
 
 function LoginForm() {
-  const [email, setEmail] = useState("ak@ak.com");
-  const [password, setPassword] = useState("123123");
+  const [email, setEmail] = useState("giwoni8879@alientex.com");
+  const [password, setPassword] = useState("ah123532003");
 
-  const { login, isPending:isLoading } = useLogin();
+  const { login, isPending: isLoading } = useLogin();
 
   function handleSubmit(e) {
     e.preventDefault();
     if (!email || !password) return;
-    login({ email, password }, {
-      onSettled:()=>{
-        setEmail("");
-        setPassword("");
+    login(
+      { email, password },
+      {
+        onSettled: () => {
+          setEmail("");
+          setPassword("");
+        },
       }
-    });
+    );
   }
 
   return (
