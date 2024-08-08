@@ -11,6 +11,34 @@ export async function login({ email, password }) {
     return data.user;
 
 }
+// const username = data.user.identities?.[0]?.identity_data.fullName;
+
+export async function signUp({ user }) {
+    if (!user.email || !user.password)
+        throw Error("No email or password");
+
+
+    let { data, error } = await supabase.auth.signUp({
+        email: user.email,
+        password: user.password,
+        options: {
+            data: {
+                fullName: user.fullName,
+                avatar: ""
+
+            }
+        }
+    });
+
+    if (error) {
+        console.error(error.message);
+        throw Error("signUp: error");
+    }
+
+    console.log(data);
+    return data;
+
+}
 export async function logout() {
 
     let { error } = await supabase.auth.signOut();
@@ -22,6 +50,7 @@ export async function logout() {
 
 
 }
+
 
 export async function getUser() {
 
