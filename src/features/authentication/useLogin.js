@@ -1,5 +1,5 @@
+import { QUERY_KEYS } from "@/constants/constants";
 import { login as loginApi } from "@/services/apiAuth";
-import { QUERY_KEYS } from "@/utils/constants";
 import { useMutation, useQueryClient } from "@tanstack/react-query";
 import toast from "react-hot-toast";
 import { useNavigate } from "react-router";
@@ -13,9 +13,10 @@ function useLogin() {
     const { mutate: login, isPending, error } = useMutation({
         mutationFn: loginApi,
         onSuccess: (user) => {
-            toast.success("Hi,  " + user.email + "  Successfully logged in");
+            const username = user.identities?.[0]?.identity_data.fullName;
+            toast.success("Hi,  " + username + "  Successfully logged in");
             navigate("/dashboard", { replace: true });
-            queryClient.setQueriesData(QUERY_KEYS.USERS, user)
+            queryClient.setQueryData(QUERY_KEYS.USERS, user)
 
         },
         onError: (err) => {

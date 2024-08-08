@@ -1,4 +1,4 @@
-import { PAGE_SIZE } from "@/utils/constants";
+import { PAGE_SIZE } from "@/constants/constants";
 import { getEndOfPage, getStartOfPage } from "@/utils/helpers";
 import { HiArrowLeft, HiArrowRight } from "react-icons/hi2";
 import { useSearchParams } from "react-router-dom";

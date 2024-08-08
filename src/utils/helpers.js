@@ -1,4 +1,4 @@
-import { PAGE_SIZE } from '@/utils/constants';
+import { PAGE_SIZE } from '@/constants/constants';
 import { differenceInDays, formatDistance, parseISO } from 'date-fns';
 
 // We want to make this function work for both Date objects and strings (which come from Supabase)

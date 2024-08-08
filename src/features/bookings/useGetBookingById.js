@@ -1,5 +1,5 @@
 import { getBooking } from "@/services/apiBookings";
-import { QUERY_KEYS } from "@/utils/constants";
+import { QUERY_KEYS } from "@/constants/constants";
 import { useQuery } from "@tanstack/react-query";
 import { useParams } from "react-router";
 

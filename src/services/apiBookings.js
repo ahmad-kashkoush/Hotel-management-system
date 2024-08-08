@@ -1,6 +1,6 @@
 import { getEndOfPage, getStartOfPage, getToday } from "@/utils/helpers";
 import supabase from "./supabase";
-import { PAGE_SIZE } from "@/utils/constants";
+import { PAGE_SIZE } from "@/constants/constants";
 const map = {
   startDate: "arrivaldate",
   totalPrice: "totalprice"
