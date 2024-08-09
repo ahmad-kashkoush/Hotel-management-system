@@ -1,27 +1,29 @@
+import useGetUser from "@/features/authentication/useGetUser";
+import useUpdateUser from "@/features/authentication/useUpdateUser";
+import { Button, FileInput, Form, FormRow, Input } from "@/ui";
 import { useState } from "react";
-
-import Button from "../../ui/Button";
-import FileInput from "../../ui/FileInput";
-import Form from "../../ui/Form";
-import FormRow from "../../ui/FormRow";
-import Input from "../../ui/Input";
-
-import { useUser } from "./useUser";
 
 function UpdateUserDataForm() {
   // We don't need the loading state, and can immediately use the user data, because we know that it has already been loaded at this point
   const {
     user: {
       email,
-      user_metadata: { fullName: currentFullName },
+      user_metadata: { fullName: currentFullName, avatar: currentAvatar },
     },
-  } = useUser();
+  } = useGetUser();
 
+  const { updateUser, isUpdating } = useUpdateUser();
   const [fullName, setFullName] = useState(currentFullName);
   const [avatar, setAvatar] = useState(null);
 
   function handleSubmit(e) {
     e.preventDefault();
+    const updatedUser = {
+      fullName,
+      avatar,
+      previousImage: currentAvatar,
+    };
+    updateUser({ updatedUser });
   }
 
   return (

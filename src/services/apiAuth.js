@@ -1,4 +1,5 @@
 import supabase from "@/services/supabase";
+import { getImagePath } from "@/utils/helpers";
 
 export async function login({ email, password }) {
 
@@ -69,4 +70,53 @@ export async function getUser() {
 
     return data?.user;
 
+}
+
+export async function updatePassword({ password }) {
+    const { data, error } = await supabase.auth.updateUser({
+        password
+    });
+    if (error) {
+        console.error(error.message);
+        throw new Error("updatePassword: error")
+    }
+    console.log(data);
+    return data;
+}
+
+export async function updateUserData({ updatedData }) {
+    const { avatar, fullName, previousImage } = updatedData;
+
+    const { hasImagePath, imagePath, imageName } = getImagePath(avatar||previousImage, "avatars");
+
+    const { data, error } = await supabase.auth.updateUser({
+        data: { fullName, avatar: imagePath }
+    });
+
+
+
+    if (error) {
+        console.error(error);
+        throw new Error("updateUserData: error")
+    }
+
+
+
+    if (!hasImagePath) {
+        const { error: imageError } = await supabase
+            .storage
+            .from('avatars')
+            .upload(imageName, avatar);
+
+        if (imageError) {
+            await supabase.auth.updateUser({
+                data: { avatar: previousImage }
+            });
+            console.error(imageError)
+            throw new Error("updateUserData: error uploading Image");
+        }
+    }
+    
+
+    return data;
 }
