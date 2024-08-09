@@ -1,9 +1,8 @@
 import { getEndOfPage, getStartOfPage, getToday } from "@/utils/helpers";
 import supabase from "./supabase";
-import { PAGE_SIZE } from "@/constants/constants";
 const map = {
-  startDate: "arrivaldate",
-  totalPrice: "totalprice"
+  startDate: "startDate",
+  totalPrice: "totalPrice"
 }
 export async function getBookings({ filter, sortBy, page }) {
 
