@@ -13,6 +13,7 @@ function BookingTableOperations() {
           { value: "checked-in", label: "Checked in" },
           { value: "unconfirmed", label: "Unconfirmed" },
         ]}
+        isBooking={true}
       />
 
       <SortBy

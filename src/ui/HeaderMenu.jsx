@@ -1,3 +1,4 @@
+import UserAvatar from "@/features/authentication/UserAvatar";
 import ToggleDarkMode from "@/pages/ToggleDarkMode";
 import { ButtonIcon } from "@/ui";
 import Logout from "@/ui/Logout";
@@ -12,6 +13,9 @@ const StyledHeaderMenu = styled.ul`
 function HeaderMenu() {
   return (
     <StyledHeaderMenu>
+      <li>
+        <UserAvatar />
+      </li>
       <li>
         <ToggleDarkMode />
       </li>

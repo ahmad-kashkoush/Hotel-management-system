@@ -8,12 +8,10 @@ const StyledHeader = styled.div`
   display: flex;
   justify-content: flex-end;
   align-items: center;
-
 `;
 function Header() {
   return (
     <StyledHeader>
-      <UserAvatar />
       <HeaderMenu />
     </StyledHeader>
   );

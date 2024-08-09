@@ -34,7 +34,7 @@ const FilterButton = styled.button`
     color: var(--color-brand-50);
   }
 `;
-function Filter({ filterField, filterOptions }) {
+function Filter({ filterField, filterOptions, isBooking = false }) {
   // const navigate = useNavigate();
   // function handleClick(e) {
   //   const filterValue = e.target.dataset.filter;
@@ -45,7 +45,7 @@ function Filter({ filterField, filterOptions }) {
   function handleClick(e) {
     const filterValue = e.target.dataset.filter;
     searchParams.set(filterField, filterValue);
-    searchParams.set("page", 1);
+    if (isBooking) searchParams.set("page", 1);
     setSearchParams(searchParams);
   }
   const active = searchParams.get(filterField) || "all";
