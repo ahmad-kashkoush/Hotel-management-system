@@ -13,7 +13,7 @@ function useLogin() {
     const { mutate: login, isPending, error } = useMutation({
         mutationFn: loginApi,
         onSuccess: (user) => {
-            const username = user.identities?.[0]?.identity_data.fullName;
+            const username = user.user_metadata.fullName;
             toast.success("Hi,  " + username + "  Successfully logged in");
             navigate("/dashboard", { replace: true });
             queryClient.setQueryData(QUERY_KEYS.USERS, user)

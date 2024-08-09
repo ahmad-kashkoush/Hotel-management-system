@@ -13,8 +13,9 @@ function useUpdateUser() {
             if (password) return updatePassword({ password });
             if (updatedData) return updateUserData({ updatedData });
         },
-        onSuccess: () => {
+        onSuccess: (user) => {
             toast.success("Account updated successfully");
+            queryClient.setQueryData([QUERY_KEYS.USERS], user)
             queryClient.invalidateQueries({
                 queryKey: [QUERY_KEYS.USERS]
             })

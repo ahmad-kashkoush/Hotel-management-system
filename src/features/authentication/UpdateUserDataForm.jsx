@@ -25,6 +25,10 @@ function UpdateUserDataForm() {
     };
     updateUser({ updatedUser });
   }
+  function handleCancel() {
+    setFullName(currentFullName);
+    setAvatar(null);
+  }
 
   return (
     <Form onSubmit={handleSubmit}>
@@ -37,6 +41,7 @@ function UpdateUserDataForm() {
           value={fullName}
           onChange={(e) => setFullName(e.target.value)}
           id="fullName"
+          disabled={isUpdating}
         />
       </FormRow>
       <FormRow label="Avatar image">
@@ -44,13 +49,14 @@ function UpdateUserDataForm() {
           id="avatar"
           accept="image/*"
           onChange={(e) => setAvatar(e.target.files[0])}
+          disabled={isUpdating}
         />
       </FormRow>
       <FormRow>
-        <Button type="reset" variation="secondary">
+        <Button type="reset" variation="secondary" disabled={isUpdating} onClick={handleCancel}>
           Cancel
         </Button>
-        <Button>Update account</Button>
+        <Button disabled={isUpdating}>Update account</Button>
       </FormRow>
     </Form>
   );

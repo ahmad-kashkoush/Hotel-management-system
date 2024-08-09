@@ -1,3 +1,4 @@
+import useGetUser from "@/features/authentication/useGetUser";
 import styled from "styled-components";
 
 const StyledUserAvatar = styled.div`
@@ -19,3 +20,21 @@ const Avatar = styled.img`
   border-radius: 50%;
   outline: 2px solid var(--color-grey-100);
 `;
+
+function UserAvatar() {
+  const {
+    user: {
+      user_metadata: { avatar, fullName },
+    },
+  } = useGetUser();
+  return (
+    <StyledUserAvatar>
+      <Avatar
+        src={avatar || "default-user.jpg"}
+        alt={`Avatar of ${fullName}`}
+      />
+      <span>{fullName}</span>
+    </StyledUserAvatar>
+  );
+}
+export default UserAvatar;

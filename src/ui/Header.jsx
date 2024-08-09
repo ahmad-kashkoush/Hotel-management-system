@@ -1,24 +1,22 @@
-import useLogout from "@/features/authentication/useLogout";
-import { Button, ButtonIcon, SpinnerMini } from "@/ui";
-import { HiArrowRightEndOnRectangle } from "react-icons/hi2";
+import UserAvatar from "@/features/authentication/UserAvatar";
+import HeaderMenu from "@/ui/HeaderMenu";
 import styled from "styled-components";
 
 const StyledHeader = styled.div`
   background-color: var(--color-grey-0);
   padding: 2rem 1rem;
   display: flex;
-  justify-content: space-between;
+  justify-content: flex-end;
   align-items: center;
+
 `;
 function Header() {
-  const { logout, isLoading } = useLogout();
   return (
     <StyledHeader>
-      Header
-      <ButtonIcon disabled={isLoading} onClick={() => logout()}>
-        {isLoading ? <SpinnerMini /> : <HiArrowRightEndOnRectangle />}
-      </ButtonIcon>
+      <UserAvatar />
+      <HeaderMenu />
     </StyledHeader>
   );
 }
+
 export default Header;
