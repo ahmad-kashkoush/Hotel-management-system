@@ -1,3 +1,4 @@
+import ToggleDarkMode from "@/pages/ToggleDarkMode";
 import { ButtonIcon } from "@/ui";
 import Logout from "@/ui/Logout";
 import { HiOutlineUser } from "react-icons/hi2";
@@ -11,6 +12,9 @@ const StyledHeaderMenu = styled.ul`
 function HeaderMenu() {
   return (
     <StyledHeaderMenu>
+      <li>
+        <ToggleDarkMode />
+      </li>
       <li>
         <ButtonAccount />
       </li>
