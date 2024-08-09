@@ -1,4 +1,5 @@
 import { PAGE_SIZE } from '@/constants/constants';
+import { supabaseUrl } from '@/services/supabase';
 import { differenceInDays, formatDistance, parseISO } from 'date-fns';
 
 // We want to make this function work for both Date objects and strings (which come from Supabase)
@@ -31,3 +32,9 @@ export const formatCurrency = (value) =>
 
 export const getStartOfPage = (page) => page * PAGE_SIZE;
 export const getEndOfPage = (page) => getStartOfPage(page) + PAGE_SIZE - 1;
+export const getImagePath = (image, bucketName) => {
+  const hasImagePath = typeof image === "string"   ? image.startsWith(supabaseUrl) : false;
+  const imageName = `${Math.random()}-${image?.name}`.replaceAll('/', '').replaceAll(' ', '-');
+  const imagePath = hasImagePath ? image : `${supabaseUrl}/storage/v1/object/public/${bucketName}/${imageName}`;
+  return { imagePath, hasImagePath, imageName };
+}

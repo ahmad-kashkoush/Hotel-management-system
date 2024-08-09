@@ -1,4 +1,5 @@
-import supabase, { supabaseUrl } from "@/services/supabase";
+import supabase from "@/services/supabase";
+import { getImagePath } from "@/utils/helpers";
 
 export async function getCabins() {
 
@@ -11,10 +12,8 @@ export async function getCabins() {
 }
 
 export async function insertCabin({ cabinData, previousImage = "", id = null }) {
-    const hasImagePath = typeof cabinData.image === "string" ? cabinData.image.startsWith(supabaseUrl) : false;
-    // 1. create cabin
-    const imageName = `${Math.random()}-${cabinData?.image?.name}`.replaceAll('/', '').replaceAll(' ', '-');
-    const imagePath = hasImagePath ? cabinData.image : `${supabaseUrl}/storage/v1/object/public/cabin-images/${imageName}`;
+
+    const { hasImagePath, imageName, imagePath } = getImagePath(cabinData.image || previousImage, "cabin-images")
     let query = supabase.from('cabins');
     //  create
     if (!id)
@@ -28,7 +27,7 @@ export async function insertCabin({ cabinData, previousImage = "", id = null }) 
     // console.log(query);
     const { data, error } = await query.select().single();
 
-    
+
     if (error) {
         const errorMessage = `createCabin: error ${id ? "updating" : "creating"} cabin`
         console.error(error);
