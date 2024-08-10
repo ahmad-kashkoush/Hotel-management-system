@@ -1,3 +1,7 @@
+import { useDarkMode } from "@/features/context/DarkModeContext";
+import { Heading } from "@/ui";
+import { formatCurrency } from "@/utils/helpers";
+import { Cell, Legend, Pie, PieChart, ResponsiveContainer, Tooltip } from "recharts";
 import styled from "styled-components";
 
 const ChartBox = styled.div`
@@ -130,3 +134,48 @@ function prepareData(startData, stays) {
 
   return data;
 }
+
+function DurationChart({ confirmedStays }) {
+  const { isDark } = useDarkMode();
+  const startData = !isDark ? startDataLight : startDataDark;
+  const data = prepareData(startData, confirmedStays);
+  return (
+    <ChartBox>
+      <Heading as={"h2"}>State duration summary</Heading>
+      <ResponsiveContainer width={"100%"} height={240}>
+        <PieChart>
+          <Pie
+            data={data}
+            innerRadius={90}
+            outerRadius={120}
+            paddingAngle={3}
+            nameKey="duration"
+            dataKey="value"
+          >
+            {/* To determine groups colors */}
+            {data.map((entry) => (
+              <Cell
+                key={entry.duration}
+                fill={entry.color}
+                stroke={entry.color}
+              />
+            ))}
+
+          </Pie>
+          {/* to see value on hovering */}
+          <Tooltip/>
+            {/* To determine what color group represent */}
+            <Legend 
+                verticalAlign="middle"
+                align="right"
+                width="30%"
+                layout="vertical"
+                iconSize={15}
+                iconType="circle"
+            />
+        </PieChart>
+      </ResponsiveContainer>
+    </ChartBox>
+  );
+}
+export default DurationChart;
