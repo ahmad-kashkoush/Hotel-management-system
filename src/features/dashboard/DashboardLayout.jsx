@@ -1,4 +1,7 @@
 import { useGetCabins } from "@/features/cabins/useGetCabins";
+import TodayActivity from "@/features/check-in-out/TodayActivity";
+import DurationChart from "@/features/dashboard/DurationChart";
+import SalesChart from "@/features/dashboard/SalesChart";
 import Stats from "@/features/dashboard/Stats";
 import useGetRecentBooking from "@/features/dashboard/useGetRecentBooking";
 import useGetStays from "@/features/dashboard/useGetStays";
@@ -22,19 +25,17 @@ function DashboardLayout() {
   const { cabins, isLoading: isLoadingCabins } = useGetCabins();
   if (isLoadingCabins || isLoadingBookings || isLoadingStays)
     return <Spinner />;
-  console.log(recentBookings);
   return (
     <StyledDashboardLayout>
       <Stats
-       bookings={recentBookings} 
-       confirmedStays={confirmedStays}
-       numDays={numDays}
-       cabinsCount={cabins.length}
-       
-       />
-      <div>Today's activity</div>
-      <div>Chart stay duration</div>
-      <div>chart sales</div>
+        bookings={recentBookings}
+        confirmedStays={confirmedStays}
+        numDays={numDays}
+        cabinsCount={cabins.length}
+      />
+      <TodayActivity />
+      <DurationChart confirmedStays={confirmedStays} />
+      <SalesChart bookings={recentBookings} numDays={numDays} />
     </StyledDashboardLayout>
   );
 }

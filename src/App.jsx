@@ -66,7 +66,7 @@ function App() {
     <DarkModeProvider>
       <QueryClientProvider client={queryClient}>
         <ReactQueryDevtools initialIsOpen={false} />
-        <RouterProvider router={router} />;
+        <RouterProvider router={router} />
         <Toaster
           position="top-center"
           gutter={12}

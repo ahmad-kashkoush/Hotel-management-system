@@ -1,5 +1,23 @@
 import styled from "styled-components";
 import DashboardBox from "./DashboardBox";
+import {
+  Area,
+  AreaChart,
+  CartesianGrid,
+  ResponsiveContainer,
+  Tooltip,
+  XAxis,
+  YAxis,
+} from "recharts";
+import { useDarkMode } from "@/features/context/DarkModeContext";
+import {
+  differenceInDays,
+  eachDayOfInterval,
+  formatDate,
+  subDays,
+} from "date-fns";
+import { subtractDates } from "@/utils/helpers";
+import { Heading } from "@/ui";
 
 const StyledSalesChart = styled(DashboardBox)`
   grid-column: 1 / -1;
@@ -43,17 +61,77 @@ const fakeData = [
   { label: "Feb 06", totalSales: 1450, extrasSales: 400 },
 ];
 
-const isDarkMode = true;
-const colors = isDarkMode
-  ? {
-      totalSales: { stroke: "#4f46e5", fill: "#4f46e5" },
-      extrasSales: { stroke: "#22c55e", fill: "#22c55e" },
-      text: "#e5e7eb",
-      background: "#18212f",
-    }
-  : {
-      totalSales: { stroke: "#4f46e5", fill: "#c7d2fe" },
-      extrasSales: { stroke: "#16a34a", fill: "#dcfce7" },
-      text: "#374151",
-      background: "#fff",
-    };
+function SalesChart({ bookings, numDays }) {
+  const { isDark } = useDarkMode();
+  const eachDay = eachDayOfInterval({
+    start: subDays(new Date(), numDays),
+    end: new Date(),
+  });
+
+  const formatedBookings = eachDay.map((day) => {
+    const formattedDate = formatDate(day, "LLL d");
+    const dayBookings = bookings.filter((x) => {
+      return differenceInDays(new Date(day).toISOString(), x.created_at) === 0;
+    });
+    const totalPrice = dayBookings.reduce(
+      (acc, cur) => acc + cur.totalPrice,
+      0
+    );
+    const extrasPrice = dayBookings.reduce(
+      (acc, cur) => acc + cur.extrasPrice,
+      0
+    );
+
+    return { label: formattedDate, totalPrice, extrasPrice };
+  });
+  const colors = isDark
+    ? {
+        totalSales: { stroke: "#4f46e5", fill: "#4f46e5" },
+        extrasSales: { stroke: "#22c55e", fill: "#22c55e" },
+        text: "#e5e7eb",
+        background: "#18212f",
+      }
+    : {
+        totalSales: { stroke: "#4f46e5", fill: "#c7d2fe" },
+        extrasSales: { stroke: "#16a34a", fill: "#dcfce7" },
+        text: "#374151",
+        background: "#fff",
+      };
+  return (
+    <StyledSalesChart>
+      <Heading as="h2">
+        Sales from {formatedBookings.at(0).label} &mdash;{" "}
+        {formatedBookings.at(-1).label}
+      </Heading>
+      <ResponsiveContainer width="100%" height={300}>
+        <AreaChart data={formatedBookings}>
+          <CartesianGrid strokeDasharray="4" text={colors.extrasSales.stroke} />
+          <XAxis dataKey={"label"} tick={{ fill: colors.text }} />
+          <YAxis unit="$" tick={{ fill: colors.text }} />
+          <Tooltip
+            contentStyle={{
+              backgroundColor: colors.background,
+            }}
+          />
+          <Area
+            dataKey="totalPrice"
+            name="Total sales"
+            unit="$"
+            type="monotone"
+            stroke={colors.totalSales.stroke}
+            fill={colors.totalSales.fill}
+          />
+          <Area
+            dataKey="extrasPrice"
+            name="Extra sales"
+            unit="$"
+            type="monotone"
+            stroke={colors.extrasSales.stroke}
+            fill={colors.extrasSales.fill}
+          />
+        </AreaChart>
+      </ResponsiveContainer>
+    </StyledSalesChart>
+  );
+}
+export default SalesChart;

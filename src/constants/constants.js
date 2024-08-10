@@ -5,5 +5,6 @@ export const QUERY_KEYS = {
   CABINS: "cabins",
   SETTINGS: "settings",
   USERS: "users",
-  STAYS: "stays"
+  STAYS: "stays",
+  TODAY_ACTIVITY: "today-activity"
 };
