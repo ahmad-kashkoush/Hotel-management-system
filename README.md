@@ -1,5 +1,8 @@
-<p>
-<img src="docs/logo-dark.png" style="display:block;margin-left:auto;margin-right:auto;"/>
+<p align="center">
+   
+   <img src="docs/logo-dark.png" />
+
+      
 </p>
 
 ## About the Project
