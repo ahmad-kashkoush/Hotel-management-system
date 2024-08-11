@@ -10,7 +10,7 @@ import ButtonText from "../../ui/ButtonText";
 
 import { useMoveBack } from "../../hooks/useMoveBack";
 import useGetBookingById from "@/features/bookings/useGetBookingById";
-import { ConfirmDelete, Modal, Spinner } from "@/ui";
+import { ConfirmDelete, Empty, Modal, Spinner } from "@/ui";
 import { HiArrowDownOnSquare, HiArrowUpOnSquare } from "react-icons/hi2";
 import { useNavigate } from "react-router";
 import useCheckoutBooking from "@/features/bookings/useCheckoutBooking";
@@ -30,6 +30,7 @@ function BookingDetail() {
   const moveBack = useMoveBack();
 
   if (isLoading) return <Spinner />;
+  if(!booking)return <Empty resource={"booking"}/>
   const status = booking.status;
   const statusToTagName = {
     unconfirmed: "blue",

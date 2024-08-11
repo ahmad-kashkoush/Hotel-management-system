@@ -1,3 +1,5 @@
+import GlobalStyles from "@/styles/GlobalStyles";
+import { Button, Heading } from "@/ui";
 import styled from "styled-components";
 
 const StyledErrorFallback = styled.main`
@@ -29,3 +31,19 @@ const Box = styled.div`
     color: var(--color-grey-500);
   }
 `;
+
+function ErrorFallback({ error, resetErrorBoundary }) {
+  return (
+    <>
+      <GlobalStyles />
+      <StyledErrorFallback>
+        <Box>
+          <Heading as={"h1"}>something went wrong</Heading>
+          <p>{error.message}</p>
+          <Button onClick={resetErrorBoundary}>Try again</Button>
+        </Box>
+      </StyledErrorFallback>
+    </>
+  );
+}
+export default ErrorFallback;

@@ -8,8 +8,9 @@ const useDarkMode = () => {
 
   return context;
 };
+const systemDefault = window.matchMedia("(prefers-color-scheme: dark)").matches;
 function DarkModeProvider({ children }) {
-  const [isDark, setIsDark] = useLocalStorageState(true, "isDarkMode");
+  const [isDark, setIsDark] = useLocalStorageState(systemDefault, "isDarkMode");
   const toggleMode = () => setIsDark((cur) => !cur);
 
   useEffect(() => {
