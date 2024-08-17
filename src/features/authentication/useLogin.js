@@ -15,8 +15,8 @@ function useLogin() {
         onSuccess: (user) => {
             const username = user.user_metadata.fullName;
             toast.success("Hi,  " + username + "  Successfully logged in");
-            navigate("/dashboard", { replace: true });
-            queryClient.setQueryData(QUERY_KEYS.USERS, user)
+            queryClient.setQueryData(QUERY_KEYS.USERS, user);
+            navigate("/dashboard");
 
         },
         onError: (err) => {

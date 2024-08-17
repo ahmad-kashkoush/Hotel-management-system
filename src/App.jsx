@@ -16,14 +16,14 @@ import {
   RouterProvider,
 } from "react-router-dom";
 
-const Account = lazy(() => import("@/pages/Account"));
-const Bookings = lazy(() => import("@/pages/Bookings"));
-const Cabins = lazy(() => import("@/pages/Cabins"));
-const Checkin = lazy(() => import("@/pages/Checkin"));
-const Dashboard = lazy(() => import("@/pages/Dashboard"));
-const Login = lazy(() => import("@/pages/Login"));
-const Settings = lazy(() => import("@/pages/Settings"));
-const NewUsers = lazy(() => import("@/pages/Users"));
+import Account from "@/pages/Account";
+import Bookings from "@/pages/Bookings";
+import Cabins from "@/pages/Cabins";
+import Checkin from "@/pages/Checkin";
+import Dashboard from "@/pages/Dashboard";
+import Login from "@/pages/Login";
+import Settings from "@/pages/Settings";
+import NewUsers from "@/pages/Users";
 
 const router = createBrowserRouter([
   {

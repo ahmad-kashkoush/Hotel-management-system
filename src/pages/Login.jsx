@@ -1,5 +1,8 @@
 import LoginForm from "@/features/authentication/LoginForm";
+import useGetUser from "@/features/authentication/useGetUser";
 import { Heading, Logo } from "@/ui";
+import { useEffect } from "react";
+import { useNavigate } from "react-router";
 import styled from "styled-components";
 
 const LoginLayout = styled.main`
@@ -13,9 +16,14 @@ const LoginLayout = styled.main`
 `;
 
 function Login() {
+  const { isAuthenticated } = useGetUser();
+  const navigate = useNavigate();
+  useEffect(() => {
+    if (isAuthenticated) navigate("/dashboard");
+  }, [isAuthenticated, navigate]);
   return (
     <LoginLayout>
-      <Logo/>
+      <Logo />
       <Heading as="h4">Login to your account</Heading>
       <LoginForm />
     </LoginLayout>
