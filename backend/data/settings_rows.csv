@@ -1,0 +1,2 @@
+id,created_at,minBookingLength,maxBookingLength,maxGuestsPerBooking,breakfastPrice
+3,2024-08-05 13:00:00.115692+00,3,95,10,205
