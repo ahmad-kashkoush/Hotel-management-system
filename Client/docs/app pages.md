@@ -1,0 +1,15 @@
+- [](app%20requirement.md#Authentication|Authentication):
+    - /login
+    - /signup
+    - /account
+- [](app%20requirement.md#Cabins|Cabins):
+    - /cabins
+    - /cabins/:id
+- [](app%20requirement.md#Bookings|Bookings) :
+    - /bookings
+    - /bookings/id
+- [](app%20requirement.md#Check%20in/out|Check%20in/out):
+    - /checkin/:bookingId
+- [](app%20requirement.md#Guest|Guest): /guest/:id
+- [](app%20requirement.md#Dashboard|Dashboard): /dashboard
+- [](app%20requirement.md#Settings|Settings): /settings
