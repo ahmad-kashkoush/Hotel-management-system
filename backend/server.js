@@ -27,3 +27,5 @@ pool.connect()
 app.listen(port, () => {
   console.log(`${process.env.NODE_ENV} Server is running on port ${port}`);
 });
+
+exports.pool = pool;// shared pool of connection to all models

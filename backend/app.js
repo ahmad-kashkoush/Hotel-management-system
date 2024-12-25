@@ -1,3 +1,7 @@
+// todo: Connect prisma with my application
+// done: create models
+// done: crud operations on all the models
+
 const express = require("express");
 const guestsRouter = require("./routers/guests-router");
 const bookingsRouter = require("./routers/bookings-router");
