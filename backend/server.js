@@ -1,5 +1,4 @@
 const { Pool } = require('pg');
-const app = require("./app");
 require('dotenv').config();
 
 const port = process.env.SERVER_PORT || 3000;
@@ -12,18 +11,25 @@ const pool = new Pool({
   password: process.env.PG_PASSWORD,
   port: process.env.PG_PORT,
 });
-
+exports.pool = pool;
 // connect to postgress database
-pool.connect()
-  .then((client) => {
+const initializeDatabase = async () => {
+  try {
+    const client = await pool.connect();
     console.log("✅ Connected to the database successfully!");
-    client.release(); // Release the client back to the pool
-  })
-  .catch((err) => {
+    client.release();
+  } catch (err) {
     console.error("❌ Database connection error:", err.stack);
     process.exit(1); // Exit the server if the database connection fails
-  });
+  }
+}
 
-app.listen(port, () => {
-  console.log(`${process.env.NODE_ENV} Server is running on port ${port}`);
-});
+const startServer = async () => {
+  await initializeDatabase();
+  const app = require("./app");  // this way I've avoided circular dependancy
+  app.listen(port, () => {
+    console.log(`${process.env.NODE_ENV} Server is running on port ${port}`);
+  });
+};
+
+startServer();
