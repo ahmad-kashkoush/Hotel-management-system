@@ -1,13 +1,13 @@
 const express = require("express");
-
+const cabinController=require("../controllers/cabinController")
 const router = express.Router();
 router
     .route('/')
-    .get((req, res, next) => {
-        res.status(200).json({
-            status: "success",
-            data: "todo get all cabins"
-        })
-    })
+    .get(cabinController.getCabins)
+    .post(cabinController.insertCabin)
+router.route("/:id")
+    .get(cabinController.getCabinById)
+    .patch(cabinController.updateCabin)
+    .delete(cabinController.deleteCabin)
 
 module.exports = router;
