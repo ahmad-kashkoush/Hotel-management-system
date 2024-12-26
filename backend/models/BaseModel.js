@@ -1,6 +1,9 @@
 
 class BaseModel {
   constructor(pool, tableName) {
+    if (!pool) {
+      throw new Error('Database pool is required');
+    }
     this.pool = pool;
     this.tableName = tableName;
   }
@@ -9,13 +12,13 @@ class BaseModel {
     const keys = Object.keys(data);
     const values = Object.values(data);
     const placeholders = values.map((_, i) => `$${i + 1}`);
-    
+
     const query = `
       INSERT INTO ${this.tableName} ("${keys.join('", "')}")
       VALUES (${placeholders})
       RETURNING *
     `;
-    
+
     const { rows } = await this.pool.query(query, values);
     return rows[0];
   }
@@ -38,18 +41,18 @@ class BaseModel {
   async update(id, updates) {
     const keys = Object.keys(updates);
     const values = Object.values(updates);
-    
+
     const setClause = keys
       .map((key, index) => `"${key}" = $${index + 1}`)
       .join(', ');
-    
+
     const query = `
       UPDATE ${this.tableName}
       SET ${setClause}
       WHERE id = $${keys.length + 1}
       RETURNING *
     `;
-    
+
     const { rows } = await this.pool.query(query, [...values, id]);
     return rows[0] || null;
   }
@@ -66,4 +69,4 @@ class BaseModel {
 
 
 
-module.exports=BaseModel;
+module.exports = BaseModel;

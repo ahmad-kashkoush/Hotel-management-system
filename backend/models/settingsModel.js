@@ -1,6 +1,5 @@
 
-const { pool } = require('../server');
-const { BaseModel } = require('./BaseModel');
+const  BaseModel  = require('./BaseModel');
 
 class SettingsModel extends BaseModel {
     constructor(pool) {
@@ -12,6 +11,11 @@ class SettingsModel extends BaseModel {
         return rows[0] || null;
     }
 
+    /**
+     * Updates the latest settings stored in the database with the given updates.
+     * @param {Object} updates - Object with key-value pairs of the settings to update.
+     * @returns {Promise<Object>} - The updated settings object.
+     */
     async updateSettings(updates) {
         const keys = Object.keys(updates);
         const values = Object.values(updates);
@@ -31,5 +35,5 @@ class SettingsModel extends BaseModel {
         return rows[0];
     }
 }
-const Settings = new SettingsModel(pool);
-module.exports = Settings;
+
+module.exports = SettingsModel;

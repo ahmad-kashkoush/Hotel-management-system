@@ -1,5 +1,4 @@
-const { pool } = require('../server');
-const { BaseModel } = require('./BaseModel');
+const BaseModel = require('./BaseModel');
 
 class BookingModel extends BaseModel {
     constructor(pool) {
@@ -68,5 +67,4 @@ class BookingModel extends BaseModel {
         return await this.update(id, { isPaid: true });
     }
 }
-const Booking = new BookingModel(pool);
-module.exports = Booking;
+module.exports = BookingModel;

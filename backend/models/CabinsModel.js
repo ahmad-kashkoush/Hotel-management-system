@@ -6,6 +6,5 @@ class CabinModel extends BaseModel {
   }
 }
 
-const Cabin = new CabinModel(pool);
 
-module.exports = Cabin;
+module.exports = CabinModel;

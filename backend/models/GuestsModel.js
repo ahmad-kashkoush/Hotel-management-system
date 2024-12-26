@@ -7,5 +7,4 @@ class GuestModel extends BaseModel {
   }
 }
 
-const Guest = new GuestModel(pool);
-module.exports = Guest;
+module.exports = GuestModel;
