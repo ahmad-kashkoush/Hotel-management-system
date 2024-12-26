@@ -1,4 +1,4 @@
-// todo: Connect prisma with my application
+// irrelevent: Connect prisma with my application
 // done: create models
 // done: crud operations on all the models
 
@@ -28,12 +28,12 @@ app.all('*', (req, res, next) => {
 });
 // done: prepare error handling
 app.use((err, req, res, next) => {
-    // enough for now
     // todo: create globalError handler
     res.status(500).json({
         status: "error",
         error: err,
-        message: err.message
+        message: err.message,
+        stack: err.stack
     })
 })
 module.exports = app;
