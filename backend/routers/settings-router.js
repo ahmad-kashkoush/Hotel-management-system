@@ -1,13 +1,11 @@
 const express = require("express");
-
+const settingsController=require("./../controllers/settingsController");
+// getSettings
+// updateSettings
 const router = express.Router();
 router
     .route('/')
-    .get((req, res, next) => {
-        res.status(200).json({
-            status: "success",
-            data: "todo get all settings"
-        })
-    })
+    .get(settingsController.getSettings)
+    .patch(settingsController.updateSettings);
 
 module.exports = router;
