@@ -2,9 +2,9 @@ const { Cabins } = require("./../db");
 const catchAsync = require("../utils/catchAsync");
 
 // done: GET api/v1/cabins
-// todo: add filter
 exports.getCabins = catchAsync(async (req, res, next) => {
-    let cabins = await Cabins.findAll();
+    let cabins = await Cabins.filter({...req.query}).findAll();
+    
     if (!cabins) throw new Error("todo: (getCabins) appError");
     res.status(200).json({
         status: "success",
