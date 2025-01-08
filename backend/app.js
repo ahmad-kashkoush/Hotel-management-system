@@ -1,6 +1,3 @@
-// irrelevent: Connect prisma with my application
-// done: create models
-// done: crud operations on all the models
 const globalErrorHandler=require("./controllers/errorController");
 const express = require("express");
 const guestsRouter = require("./routers/guests-router");
@@ -22,7 +19,6 @@ app.use("/api/v1/guests", guestsRouter);
 app.use("/api/v1/cabins", cabinsRouter);
 app.use("/api/v1/bookings", bookingsRouter);
 app.use("/api/v1/settings", settingsRouter);
-// todo: handle unhandled requests
 app.all('*', (req, res, next) => {
     next(new AppError("Request cann't be handled", 404))
 });
@@ -33,3 +29,8 @@ module.exports = app;
 // done: settings route
 // done: cabins route
 // done: guests route
+// done: handle unhandled requests
+
+// irrelevent: Connect prisma with my application
+// done: create models
+// done: crud operations on all the models
