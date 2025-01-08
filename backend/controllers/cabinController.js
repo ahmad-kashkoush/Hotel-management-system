@@ -1,11 +1,15 @@
 const { Cabins } = require("./../db");
 const catchAsync = require("../utils/catchAsync");
+const AppError = require("../AppError");
 
 // done: GET api/v1/cabins
 exports.getCabins = catchAsync(async (req, res, next) => {
-    let cabins = await Cabins.filter({...req.query}).findAll();
-    
-    if (!cabins) throw new Error("todo: (getCabins) appError");
+    let cabins = await Cabins.filter({ ...req.query }).findAll();
+
+    if (!cabins) {
+        return next(new AppError("Server error", 500))
+    }
+
     res.status(200).json({
         status: "success",
         data: {
@@ -17,7 +21,9 @@ exports.getCabins = catchAsync(async (req, res, next) => {
 // done: GET api/v1/cabins/:id
 exports.getCabinById = catchAsync(async (req, res, next) => {
     let cabin = await Cabins.findById(req.params.id);
-    if (!cabin) throw new Error("todo: (getCabinsById) appError");
+    if (!cabin) {
+        return next(new AppError("cabin not found", 404));
+    }
     res.status(200).json({
         status: "success",
         data: {
@@ -29,7 +35,9 @@ exports.getCabinById = catchAsync(async (req, res, next) => {
 // done: post api/v1/cabins/
 exports.insertCabin = catchAsync(async (req, res, next) => {
     let cabin = await Cabins.create(req.body);
-    if (!cabin) throw Error("todo:insertCabin appError")
+    if (!cabin) {
+        return next(new AppError("Cabin could not be inserted", 400));
+    }
     res.status(200).json({
         status: "success",
         data: {
@@ -41,7 +49,9 @@ exports.insertCabin = catchAsync(async (req, res, next) => {
 // done: Delete api/v1/cabins/:id
 exports.deleteCabin = catchAsync(async (req, res, next) => {
     let cabin = await Cabins.delete(req.params.id);
-    if (cabin === null) throw Error("todo:deleteCabin appError")
+    if (cabin === null) {
+        return next(new AppError("Cabin could not be deleted", 404))
+    }
     res.status(201).json({
         status: "success",
         data: {
@@ -54,7 +64,9 @@ exports.deleteCabin = catchAsync(async (req, res, next) => {
 // done: patch api/v1/cabins/:id
 exports.updateCabin = catchAsync(async (req, res, next) => {
     let cabin = await Cabins.update(req.params.id, req.body);
-    if (!cabin) throw Error("todo:deleteCabin appError")
+    if (!cabin) {
+        return next(new AppError("Cabin could not be updated", 400));
+    }
     res.status(200).json({
         status: "success",
         data: {
