@@ -3,7 +3,7 @@ import { Button, Form, FormRowVertical, Input, SpinnerMini } from "@/ui";
 import { useState } from "react";
 
 function LoginForm() {
-  const [email, setEmail] = useState("giwoni8879@alientex.com");
+  const [email, setEmail] = useState("test2@test2.com");
   const [password, setPassword] = useState("ah123532003");
 
   const { login, isPending: isLoading } = useLogin();

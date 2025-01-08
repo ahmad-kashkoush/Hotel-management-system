@@ -7,14 +7,18 @@
     "test": "echo \"Error: no test specified\" && exit 1",
     "start": "nodemon server.js",
     "start:prod": "NODE_ENV='production' nodemon server.js",
-    "enter-database": "psql -h localhost -U ahmed_pg -p 5432 -d wild_hotel_management "
+    "enter-database": "pgcli -h localhost -U postgres -p 5432 -d wild_hotel_management "
   },
   "keywords": [],
   "author": "",
   "license": "ISC",
   "dependencies": {
+    "@prisma/client": "^6.1.0",
+    "cors": "^2.8.5",
     "dotenv": "^16.4.7",
     "express": "^4.21.2",
-    "pg": "^8.13.1"
+    "nodemon": "^3.1.9",
+    "pg": "^8.13.1",
+    "prisma": "^6.1.0"
   }
 }
