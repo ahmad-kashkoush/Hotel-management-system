@@ -11,6 +11,15 @@ const mapper = {
     
 
 }
+const filteredCabin = (obj) => {
+    const res = {};
+    ["name", "maxcapacity", "regularprice", "discount", "description", "image"].forEach(field => {
+        if (obj[mapper[field]]) {
+            res[field] = obj[mapper[field]];
+        }
+    });
+    return res;
+}
 exports.getCabins = catchAsync(async (req, res, next) => {
     let cabins = await Cabins.filter({ ...req.query }).findAll();
 
