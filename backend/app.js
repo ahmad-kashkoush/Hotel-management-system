@@ -5,13 +5,13 @@ const bookingsRouter = require("./routers/bookings-router");
 const cabinsRouter = require("./routers/cabins-router");
 const settingsRouter = require("./routers/settings-router");
 const AppError = require("./AppError");
-
+const cors=require("cors")
 const app = express();
 
 
 // done: Middleware to parse json body
 app.use(express.json());
-
+app.use(cors());
 
 
 // done: prepare routes
