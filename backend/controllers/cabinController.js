@@ -1,8 +1,16 @@
 const { Cabins } = require("./../db");
 const catchAsync = require("../utils/catchAsync");
 const AppError = require("../AppError");
+const mapper = {
+    "maxcapacity": "maxCapacity",
+    "name": "name",
+    "regularprice": "regularPrice",
+    "discount": "discount",
+    "description": "description",
+    "image": "image",
+    
 
-// done: GET api/v1/cabins
+}
 exports.getCabins = catchAsync(async (req, res, next) => {
     let cabins = await Cabins.filter({ ...req.query }).findAll();
 

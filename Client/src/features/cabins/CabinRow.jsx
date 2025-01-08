@@ -38,8 +38,8 @@ function CabinRow({ cabin }) {
   const {
     id: cabinId,
     name,
-    maxCapacity,
-    regularPrice,
+    maxcapacity: maxCapacity,
+    regularprice: regularPrice,
     discount,
     image,
   } = cabin;

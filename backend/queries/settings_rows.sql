@@ -1,1 +1,1 @@
-INSERT INTO "settings" ("id", "created_at", "minBookingLength", "maxBookingLength", "maxGuestsPerBooking", "breakfastPrice") VALUES ('3', '2024-08-05 13:00:00.115692+00', '3', '95', '10', '205');
+INSERT INTO "settings" ("id", "created_at", "minbookinglength", "maxbookinglength", "maxguestsperbooking", "breakfastprice") VALUES ('3', '2024-08-05 13:00:00.115692+00', '3', '95', '10', '205');
