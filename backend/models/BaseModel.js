@@ -1,3 +1,4 @@
+const AppError = require("../AppError");
 
 class BaseModel {
   constructor(pool, tableName) {
@@ -7,35 +8,42 @@ class BaseModel {
     this.pool = pool;
     this.tableName = tableName;
     this.fields = "*";
-    this.sort = "name ASC";
-    this.limit = 20;
+    this.sort = "";
+    this.limit = -1;
+    this.page = 1;
 
   }
   filter(obj) {
-    console.log(obj);
-    // todo: execlude some keys: e.g. sort,fields,limit,...,etc
+    if (Object.keys(obj).length < 1)
+      return this;
+    // done: execlude some keys: e.g. sort,fields,limit,...,etc
     let queryObj = { ...obj };
     ['page', 'limit', 'sort', 'fields'].forEach(el => delete queryObj[el]);
     let queryFiltered = JSON.stringify(queryObj);
     queryFiltered = JSON.parse(queryFiltered.replace(/\b(gte|gt|lte|lt)\b/g, match => `$${match}`));
-    // done: prepare fieldsClause instead of always star
-    if (Object.keys(obj.fields).length > 0)
-      this.fields = obj.fields.split(",").join(",");
-    // todo: prepare a sortClause
-    this.sort = obj.sort.split(",")
-      .map(item => {
-        if (item.startsWith("-")) {
-          item = [item.substring(1), "DESC"].join(" ");
-        } else {
-          item = [item, "ASC"].join(" ");
-        }
-        return item;
 
-      }).join(", ");
-    console.log(this.sort);
-    // todo add pagination
+    // done: prepare fieldsClause instead of always star
+    if (obj.fields && Object.keys(obj.fields).length > 0)
+      this.fields = obj.fields.split(",").join(",");
+    // done: prepare a sortClause
+    if (obj.sort) {
+      this.sort = obj.sort.split(",")
+        .map(item => {
+          if (item.startsWith("-")) {
+            item = [item.substring(1), "DESC"].join(" ");
+          } else {
+            item = [item, "ASC"].join(" ");
+          }
+          return item;
+
+        }).join(", ");
+    }
+
     if (Number.isFinite(+obj.limit)) {
       this.limit = +obj.limit
+    }
+    if (Number.isFinite(+obj.page)) {
+      this.page = +obj.page;
     }
 
     // Prepare whereClause
@@ -74,22 +82,53 @@ class BaseModel {
 
   async findById(id) {
     const { rows } = await this.pool.query(
-      `SELECT * FROM ${this.tableName} WHERE id = $1`,
+      `SELECT ${this.fields?this.fields:"*"} FROM ${this.tableName} WHERE id = $1`,
       [id]
     );
     return rows[0] || null;
   }
 
   async findAll() {
+    // validate limit and page
+    // construct initial query
+    // if not limit, then no pagination, then fetch all
+    // otherwise, then pagination
+    // 1) fetch count
+    // 2) validate pagination
+    // 3) paginated query
+    // 4) return details about pagination also
+    // todo: refactor this method to include paginated query in https://chatgpt.com/share/67791ca9-37b8-8007-8780-ef22ec5965bf
+
+
+
+
+
+
+
     const query = `
     SELECT ${this.fields}
     FROM ${this.tableName}
     ${this.whereClause}
     ${this.sort ? `ORDER BY ${this.sort}` : ""}
-    ${this.limit ? `LIMIT ${this.limit}` : ""};
     `
+    // ${this.limit > 0 ? `LIMIT ${this.limit}` : ""};
+
+
     const { rows } = await this.pool.query(query);
-    return rows;
+    // todo: add pagincation
+    let numberOfPages = -1;
+    let start = 0;
+    let end = rows.length;
+    if (this.limit > 0) {
+      numberOfPages = Math.ceil(rows.length / this.limit);
+      if (this.page > numberOfPages || this.page < 1) {
+        throw new AppError("page is not in range");
+      }
+      // range will be [start, end)
+      start = (this.page - 1) * this.limit;
+      end = Math.min(start + this.limit, rows.length);
+    }
+    return rows.slice(start, end);
   }
 
   async update(id, updates) {
