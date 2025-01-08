@@ -26,16 +26,16 @@ exports.getCabins = catchAsync(async (req, res, next) => {
     if (!cabins) {
         return next(new AppError("Server error", 500))
     }
+    let data = cabins;
+    if (data.length === 0)
+        data = "empty cabins right now"
 
     res.status(200).json({
         status: "success",
-        data: {
-            cabins
-        }
+        data
     })
 
 })
-// done: GET api/v1/cabins/:id
 exports.getCabinById = catchAsync(async (req, res, next) => {
     let cabin = await Cabins.findById(req.params.id);
     if (!cabin) {
@@ -49,47 +49,43 @@ exports.getCabinById = catchAsync(async (req, res, next) => {
     })
 
 })
-// done: post api/v1/cabins/
 exports.insertCabin = catchAsync(async (req, res, next) => {
-    let cabin = await Cabins.create(req.body);
+    let cabin = await Cabins.create(filteredCabin(req.body));
     if (!cabin) {
         return next(new AppError("Cabin could not be inserted", 400));
     }
     res.status(200).json({
         status: "success",
-        data: {
-            cabin
-        }
+        data: cabin
     })
 
 })
-// done: Delete api/v1/cabins/:id
 exports.deleteCabin = catchAsync(async (req, res, next) => {
     let cabin = await Cabins.delete(req.params.id);
-    if (cabin === null) {
-        return next(new AppError("Cabin could not be deleted", 404))
+    if (!cabin) {
+        return next(new AppError(`Cabin with id ${req.params.id} does not exist`, 404))
     }
-    res.status(201).json({
+    res.status(204).json({
         status: "success",
-        data: {
-            cabin
-        }
+        data: null
     })
 
 })
-
-// done: patch api/v1/cabins/:id
 exports.updateCabin = catchAsync(async (req, res, next) => {
-    let cabin = await Cabins.update(req.params.id, req.body);
+
+    let cabin = await Cabins.update(req.params.id, filteredCabin(req.body));
     if (!cabin) {
         return next(new AppError("Cabin could not be updated", 400));
     }
     res.status(200).json({
         status: "success",
-        data: {
-            cabin
-        }
+        data: cabin
     })
 
 })
-// done : test
+
+// done: Delete api/v1/cabins/:id
+// done: patch api/v1/cabins/:id
+// done: post api/v1/cabins/
+// done: GET api/v1/cabins/:id
+// done: GET api/v1/cabins
