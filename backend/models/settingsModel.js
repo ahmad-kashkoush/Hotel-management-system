@@ -1,5 +1,5 @@
 
-const  BaseModel  = require('./BaseModel');
+const BaseModel = require('./BaseModel');
 
 class SettingsModel extends BaseModel {
     constructor(pool) {

@@ -20,7 +20,7 @@ class BaseModel {
     let queryObj = { ...obj };
     ['page', 'limit', 'sort', 'fields'].forEach(el => delete queryObj[el]);
     let queryFiltered = JSON.stringify(queryObj);
-    queryFiltered = JSON.parse(queryFiltered.replace(/\b(gte|gt|lte|lt)\b/g, match => `$${match}`));
+    // For example, if obj is { created_at__
 
     // done: prepare fieldsClause instead of always star
     if (obj.fields && Object.keys(obj.fields).length > 0)
@@ -47,23 +47,52 @@ class BaseModel {
     }
 
     // Prepare whereClause
-    const whereConditions = [];
-    for (let [key, value] of Object.entries(queryFiltered)) {
-      if (typeof value === 'object' && value !== null) {
-        // Handle operators like $gte, $lte, etc.
-        for (let [operator, val] of Object.entries(value)) {
-          whereConditions.push(`${key} ${operator.replace('$', '')} '${val}'`);
-        }
-      } else {
-        whereConditions.push(`${key} = '${value}'`);
-      }
-    }
-    this.whereClause = whereConditions.length > 0 ? `WHERE ${whereConditions.join(' AND ')}` : "";
+    this.buildWhereClause(queryFiltered);
 
 
     return this;
 
   }
+
+  buildWhereClause(queryObject) {
+    const operatorsMap = {
+      gt: '>',
+      lt: '<',
+      gte: '>=',
+      lte: '<=',
+      eq: '=', // Explicit equality
+      neq: '!=', // Explicit inequality
+    };
+
+    const whereConditions = [];
+    for (const [key, value] of Object.entries(JSON.parse(queryObject))) {
+      const match = key.match(/(\w+)__(gt|lt|gte|lte|eq|neq)$/);// capture field, operator
+      if (match) {
+        // Extract the field, operator, and value
+        const [, field, operator] = match;
+        const sqlOperator = operatorsMap[operator];
+        const formattedValue =
+          field.includes('created_at') || field.includes('date')
+            ? `TO_DATE('${value}', 'YYYY-MM-DD')`
+            : isNaN(value) ? `'${value}'` : value;
+
+        whereConditions.push(`${field} ${sqlOperator} ${formattedValue}`);
+      } else {
+        // Default to equality if no operator is provided
+        const formattedValue =
+          key.includes('created_at') || key.includes('date')
+            ? `TO_DATE('${value}', 'YYYY-MM-DD')`
+            : isNaN(value) ? `'${value}'` : value;
+
+        whereConditions.push(`${key} = ${formattedValue}`);
+      }
+    }
+
+    this.whereClause = whereConditions.length > 0 ? `WHERE ${whereConditions.join(' AND ')}` : '';
+
+  };
+
+
 
   async create(data) {
     const keys = Object.keys(data);
@@ -82,7 +111,7 @@ class BaseModel {
 
   async findById(id) {
     const { rows } = await this.pool.query(
-      `SELECT ${this.fields?this.fields:"*"} FROM ${this.tableName} WHERE id = $1`,
+      `SELECT ${this.fields ? this.fields : "*"} FROM ${this.tableName} WHERE id = $1`,
       [id]
     );
     return rows[0] || null;
@@ -119,7 +148,7 @@ class BaseModel {
     let numberOfPages = -1;
     let start = 0;
     let end = rows.length;
-    if (this.limit > 0) {
+    if (this.limit > 0 && rows.length > this.limit) {
       numberOfPages = Math.ceil(rows.length / this.limit);
       if (this.page > numberOfPages || this.page < 1) {
         throw new AppError("page is not in range");
@@ -156,6 +185,10 @@ class BaseModel {
       [id]
     );
     return rowCount > 0;
+  }
+
+  async executeRowQuery(query) {
+    return await this.pool.query(query);
   }
 }
 

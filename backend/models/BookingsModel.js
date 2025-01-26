@@ -1,38 +1,57 @@
+const AppError = require('../AppError');
 const BaseModel = require('./BaseModel');
 
 class BookingModel extends BaseModel {
     constructor(pool) {
         super(pool, 'bookings');
+        this.totalCount = -1;
     }
 
     async create(bookingData) {
         const totalPrice = (bookingData.cabinPrice || 0) + (bookingData.extrasPrice || 0);
         return await super.create({ ...bookingData, totalPrice });
     }
-
-    async findByGuestId(guestId) {
-        const { rows } = await this.pool.query(
-            `SELECT b.*, g.fullName as guestName, c.name as cabinName 
-       FROM bookings b 
-       LEFT JOIN guests g ON b."guestId" = g.id 
-       LEFT JOIN cabins c ON b."cabinId" = c.id 
-       WHERE b."guestId" = $1 
-       ORDER BY b."startDate" DESC`,
-            [guestId]
-        );
-        return rows;
+    async findAll() {
+        const query = `
+        SELECT ${this.fields}
+        FROM ${this.tableName}
+        ${this.fields.includes("cabins") ? "join cabins on cabins.id=bookings.cabinid" : ""}
+        ${this.fields.includes("guests") ? "join guests on guests.id=bookings.guestid" : ""}
+        ${this.whereClause}
+        ${this.sort ? `ORDER BY ${this.sort}` : ""};
+        `
+        const { rows } = await this.pool.query(query);
+        // todo: add pagincation
+        let numberOfPages = -1;
+        let start = 0;
+        let end = rows.length;
+        if (this.limit > 0 && rows.length > this.limit) {
+            numberOfPages = Math.ceil(rows.length / this.limit);
+            if (this.page > numberOfPages || this.page < 1) {
+                throw new AppError("page is not in range");
+            }
+            // range will be [start, end)
+            start = (this.page - 1) * this.limit;
+            end = Math.min(start + this.limit, rows.length);
+        }
+        this.totalCount = rows.length;
+        return rows.slice(start, end);
+        // console.log(`coming from booking model with query: ${query}`);
     }
 
-    async findByCabinId(cabinId) {
+
+    async findById(id) {
+        const query = `  SELECT ${this.fields}
+        FROM ${this.tableName}
+        ${this.fields.includes("cabins") ? "join cabins on cabins.id=bookings.cabinid" : ""}
+        ${this.fields.includes("guests") ? "join guests on guests.id=bookings.guestid" : ""}
+        where bookings.id=$1;`;
         const { rows } = await this.pool.query(
-            `SELECT b.*, g.fullName as guestName 
-       FROM bookings b 
-       LEFT JOIN guests g ON b."guestId" = g.id 
-       WHERE b."cabinId" = $1 
-       ORDER BY b."startDate" DESC`,
-            [cabinId]
+            query,
+            [id]
         );
-        return rows;
+        rows[0].id=id;
+        return rows[0];
     }
 
     async findActiveBookings() {
@@ -52,8 +71,8 @@ class BookingModel extends BaseModel {
             `SELECT COUNT(*) as count 
        FROM bookings 
        WHERE "cabinId" = $1 
-       AND status = 'active' 
-       AND ("startDate", "endDate") OVERLAPS ($2::timestamp, $3::timestamp)`,
+       AND status = 'active'
+        AND("startDate", "endDate") OVERLAPS($2:: timestamp, $3:: timestamp)`,
             [cabinId, startDate, endDate]
         );
         return parseInt(rows[0].count) === 0;

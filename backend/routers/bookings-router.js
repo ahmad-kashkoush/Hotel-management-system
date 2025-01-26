@@ -4,8 +4,12 @@ const router = express.Router();
 
 
 
+router.route("/after-date")
+    .get(bookingController.getBookingsAfterDate, bookingController.getBookings);
 
-
+router.route("/stays-after-date")
+    .get(bookingController.getStaysAfterDate, bookingController.getBookings);
+router.route("/today-activity").get(bookingController.getTodayStatysActivity);
 router
     .route('/')
     .get(bookingController.getBookings)

@@ -10,17 +10,20 @@ import {
 function Stats({ bookings, confirmedStays, numDays, cabinsCount }) {
   const numBookings = bookings?.length;
 
-  const sales = bookings?.reduce((acc, cur) => acc + cur.totalPrice, 0);
-
+  const sales = bookings?.reduce((acc, cur) => acc + cur.totalprice, 0);
+  console.log(bookings);
   const checkIns = confirmedStays?.length;
 
   // occuapancy rate
   const occupiedNights = confirmedStays.reduce(
-    (acc, cur) => acc + cur.numNights,
+    (acc, cur) => acc + cur.numnights,
     0
   );
-  const totalAvailableNights=numDays*cabinsCount;
-  const occupancy = Math.round(((occupiedNights / totalAvailableNights) * 100 + Number.EPSILON) * 100) / 100;
+  const totalAvailableNights = numDays * cabinsCount;
+  const occupancy =
+    Math.round(
+      ((occupiedNights / totalAvailableNights) * 100 + Number.EPSILON) * 100
+    ) / 100;
   return (
     <>
       <Stat

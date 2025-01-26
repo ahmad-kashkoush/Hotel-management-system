@@ -48,14 +48,17 @@ function BookingRow({
   booking: {
     id: bookingId,
     created_at,
-    startDate,
-    endDate,
-    numNights,
-    numGuests,
-    totalPrice,
+    startdate: startDate,
+    enddate: endDate,
+    numnights: numNights,
+    numguests: numGuests,
+    totalprice: totalPrice,
     status,
-    guests: { fullname: guestName, email },
-    cabins: { name: cabinName },
+    // guest data
+    fullname: guestName,
+    email,
+    // cabin
+    name: cabinName,
   },
 }) {
   const statusToTagName = {
@@ -97,7 +100,7 @@ function BookingRow({
           <ConfirmDelete
             resourceName={`booking#${bookingId}`}
             disabled={isDeleting}
-            onConfirm={() => deleteBooking({id:bookingId})}
+            onConfirm={() => deleteBooking({ id: bookingId })}
           />
         </Modal.Window>
         <Menus.Menu>
