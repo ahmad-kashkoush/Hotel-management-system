@@ -1,5 +1,5 @@
 const express = require("express");
-const cabinController=require("../controllers/cabinController")
+const cabinController = require("../controllers/cabinController")
 const router = express.Router();
 router
     .route('/')
