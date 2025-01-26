@@ -1,8 +1,8 @@
 
 const AppError = require("../AppError");
 const { Bookings } = require("../db");
-const catchAsync = require("../utils/catchAsync")
-
+const catchAsync = require("../utils/catchAsync");
+const getToday = require("../utils/getToday");
 exports.getBookings = catchAsync(async (req, res, next) => {
     const bookings = await Bookings.filter({ ...req.query }).findAll();
     res.status(200).json({
