@@ -6,14 +6,14 @@ import { useSearchParams } from "react-router-dom";
 
 function useGetRecentBooking() {
     const [searchParams] = useSearchParams();
-    const lastValue = Number(searchParams.get("last")) || 7;
+    const lastValue = Number(searchParams.get("last")) || 360;
 
-    const lastDate = subDays(new Date(), lastValue).toISOString();
-    const { data: recentBookings, isLoading } = useQuery({
+    const lastDate = subDays(new Date(), lastValue).toISOString().slice(0, 10);
+    const { data: recentBookings, count, isLoading } = useQuery({
         queryKey: [QUERY_KEYS.BOOKINGS, `last-${lastValue}`],
         queryFn: () => getBookingsAfterDate(lastDate)
     });
-    return { recentBookings, isLoading, numDays:lastValue };
+    return { recentBookings, count, isLoading, numDays: lastValue };
 }
 export default useGetRecentBooking;
 

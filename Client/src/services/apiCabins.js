@@ -1,12 +1,11 @@
 import supabase from "@/services/supabase";
 import { getImagePath } from "@/utils/helpers";
-const url = "http://127.0.0.1:3000/api/v1";
+const url = import.meta.env.VITE_ENDPOINT_URL;
 export async function getCabins() {
     // const { data: cabins, error } = await supabase
     //     .from('cabins')
     //     .select('*');
     // if (error) throw error;
-
     const res = await fetch(`${url}/cabins`);
     const { data: cabins, error } = await res.json();
 
@@ -26,7 +25,7 @@ export async function insertCabin({ cabinData, previousImage = "", id = null }) 
 
     let [data, error] = [undefined, undefined];
     //  create
-    
+
     if (!id) {
         //     query = query.insert([{ ...cabinData, image: imagePath }]);
         const response = await fetch(`${url}/cabins/`, {
@@ -36,22 +35,22 @@ export async function insertCabin({ cabinData, previousImage = "", id = null }) 
         });
         const obj = await response.json();
         data = obj.data; error = obj.error;
-        
+
     }
     // update
     if (id) {
         // query = query.update({
-            //     ...cabinData,
-            //     image: imagePath
-            // }).eq('id', id);
-            const response = await fetch(`${url}/cabins/${id}`, {
-                method: "PATCH",
-                headers: { "Content-Type": "application/json" },
-                body: JSON.stringify({ ...cabinData, image: imagePath }),
-            });
-            const obj = await response.json();
-            data = obj.data;
-            error = obj.error;
+        //     ...cabinData,
+        //     image: imagePath
+        // }).eq('id', id);
+        const response = await fetch(`${url}/cabins/${id}`, {
+            method: "PATCH",
+            headers: { "Content-Type": "application/json" },
+            body: JSON.stringify({ ...cabinData, image: imagePath }),
+        });
+        const obj = await response.json();
+        data = obj.data;
+        error = obj.error;
 
 
     }
@@ -65,9 +64,9 @@ export async function insertCabin({ cabinData, previousImage = "", id = null }) 
     }
     if (!hasImagePath) {
         const { error: imageError } = await supabase
-        .storage
-        .from('cabin-images')
-        .upload(imageName, cabinData.image);
+            .storage
+            .from('cabin-images')
+            .upload(imageName, cabinData.image);
         if (imageError) {
             if (!id)
                 await deleteCabin(data.id);
@@ -84,7 +83,7 @@ export async function deleteCabin(cabinId) {
     //     .from('cabins')
     //     .delete()
     //     .eq('id', cabinId);
-    
+
     const { error } = await fetch(`${url}/cabins/${cabinId}`, {
         method: "DELETE"
     });

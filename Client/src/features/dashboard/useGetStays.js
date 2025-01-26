@@ -8,7 +8,7 @@ function useGetStays() {
     const [searchParams] = useSearchParams();
     const lastValue = Number(searchParams.get("last")) || 7;
 
-    const lastDate = subDays(new Date(), lastValue).toISOString();
+    const lastDate = subDays(new Date(), lastValue).toISOString().slice(0, 10);
     const { data: stays, isLoading } = useQuery({
         queryKey: [QUERY_KEYS.STAYS, `last-${lastValue}`],
         queryFn: () => getStaysAfterDate(lastDate)
