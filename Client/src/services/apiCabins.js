@@ -1,6 +1,8 @@
 import supabase from "@/services/supabase";
 import { getImagePath } from "@/utils/helpers";
 const url = import.meta.env.VITE_ENDPOINT_URL;
+
+
 export async function getCabins() {
     // const { data: cabins, error } = await supabase
     //     .from('cabins')
@@ -12,6 +14,14 @@ export async function getCabins() {
     if (error) throw error;
     return cabins;
 
+}
+export async function updateCabin(id, cabinData, imagePath) {
+    const response = await fetch(`${url}/cabins/${id}`, {
+        method: "PATCH",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({ ...cabinData, image: imagePath }),
+    });
+    return await response.json();
 }
 
 export async function insertCabin({ cabinData, previousImage = "", id = null }) {
@@ -43,12 +53,7 @@ export async function insertCabin({ cabinData, previousImage = "", id = null }) 
         //     ...cabinData,
         //     image: imagePath
         // }).eq('id', id);
-        const response = await fetch(`${url}/cabins/${id}`, {
-            method: "PATCH",
-            headers: { "Content-Type": "application/json" },
-            body: JSON.stringify({ ...cabinData, image: imagePath }),
-        });
-        const obj = await response.json();
+        const obj = await updateCabin(id, cabinData, imagePath);
         data = obj.data;
         error = obj.error;
 
@@ -71,7 +76,7 @@ export async function insertCabin({ cabinData, previousImage = "", id = null }) 
             if (!id)
                 await deleteCabin(data.id);
             else {
-                await supabase.from('cabins').update({ ...cabinData, image: previousImage });
+                await updateCabin(id, cabinData, previousImage);
             }
             throw new Error("createCabin: error uploading Image");
         }
@@ -89,6 +94,3 @@ export async function deleteCabin(cabinId) {
     });
     if (error) throw error;
 }
-
-// done: patch request with data
-// done: post request with data
