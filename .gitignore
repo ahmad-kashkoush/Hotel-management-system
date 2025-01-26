@@ -1,2 +1,3 @@
 dist
 Client/node_modules
+**/.env
