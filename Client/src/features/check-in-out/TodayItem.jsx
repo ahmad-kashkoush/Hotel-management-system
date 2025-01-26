@@ -25,14 +25,20 @@ const Guest = styled.p`
 `;
 
 function TodayItem({ activity }) {
-  const { id, status, guests, numNights, hasBreakfast } = activity;
+  const {
+    id,
+    status,
+    guests,
+    numnights: numNights,
+    hasbreakfast: hasBreakfast,
+  } = activity;
   const { checkout, isCheckingOut } = useCheckoutBooking();
   return (
     <StyledTodayItem>
       {status === "unconfirmed" && <Tag type="green">Arriving</Tag>}
       {status === "checked-in" && <Tag type="blue">Departing</Tag>}
-      <Flag src={guests.countryFlag} alt={`Flag of ${guests.country}`} />
-      <Guest>{guests.fullName}</Guest>
+      <Flag src={guests.countryflag} alt={`Flag of ${guests.country}`} />
+      <Guest>{guests.fullname}</Guest>
       <div>{numNights} nights</div>
       {status === "unconfirmed" && (
         <Button as={Link} to={`/checkin/${id}`}>

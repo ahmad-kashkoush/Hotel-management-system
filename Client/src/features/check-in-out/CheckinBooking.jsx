@@ -40,7 +40,7 @@ function CheckinBooking({ id }) {
   // for any Loader
   const isAnyLoading = isLoading || isCheckingBooking || isLoadingSettings;
   if (isAnyLoading) return <Spinner />;
-  const { guests, totalPrice, numGuests, hasBreakfast, numNights, status } =
+  const { fullname, totalprice:totalPrice, numguests:numGuests, hasbreakfast:hasBreakfast, numnights:numNights, status } =
     booking;
 
   const bookingId = !id ? booking.id : id;
@@ -48,7 +48,7 @@ function CheckinBooking({ id }) {
     (settings?.breakfastPrice || 0) * numGuests * numNights;
 
   function handleCheckin() {
-    if (booking.isPaid) return;
+    if (booking.ispaid) return;
 
     if (hadBreakfast) {
       checkinBooking({
@@ -96,7 +96,7 @@ function CheckinBooking({ id }) {
           id={"confirm check-in"}
           disabled={isAnyLoading || confirmCheckin}
         >
-          I confirm that {guests.fullName} has paid $
+          I confirm that {fullname} has paid $
           {!hadBreakfast
             ? formatCurrency(totalPrice)
             : `${formatCurrency(totalPrice + breakfastPrice)} (${formatCurrency(
