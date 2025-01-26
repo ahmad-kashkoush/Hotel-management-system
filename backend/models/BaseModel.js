@@ -157,6 +157,10 @@ class BaseModel {
     );
     return rowCount > 0;
   }
+
+  async executeRowQuery(query) {
+    return await this.pool.query(query);
+  }
 }
 
 
