@@ -17,7 +17,7 @@ function useSignup() {
         },
         onError: (err) => {
             console.error("Error:" + err.message)
-            toast.error("Faild creating account")
+            toast.error(`Error:${err.message}`)
         }
     })
 
