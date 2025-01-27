@@ -1,11 +1,12 @@
-const globalErrorHandler=require("./controllers/errorController");
+const globalErrorHandler = require("./controllers/errorController");
 const express = require("express");
 const guestsRouter = require("./routers/guests-router");
 const bookingsRouter = require("./routers/bookings-router");
 const cabinsRouter = require("./routers/cabins-router");
 const settingsRouter = require("./routers/settings-router");
+const usersRouter = require("./routers/users-router");
 const AppError = require("./AppError");
-const cors=require("cors")
+const cors = require("cors")
 const app = express();
 
 
@@ -15,10 +16,12 @@ app.use(cors());
 
 
 // done: prepare routes
+
 app.use("/api/v1/guests", guestsRouter);
 app.use("/api/v1/cabins", cabinsRouter);
 app.use("/api/v1/bookings", bookingsRouter);
 app.use("/api/v1/settings", settingsRouter);
+app.use("/api/v1/users", usersRouter);
 app.all('*', (req, res, next) => {
     next(new AppError("Request cann't be handled", 404))
 });

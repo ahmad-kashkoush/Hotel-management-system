@@ -54,3 +54,20 @@ create table settings (
     "breakfastPrice" double precision null,
     constraint settings_pkey primary key (id)
   ) tablespace pg_default;
+
+
+create table users (
+  id bigserial not null,
+  created_at timestamp with time zone not null default current_timestamp,
+  name text  null,
+  email text not null unique,
+  password text not null,
+  role text not null,
+  phone text,
+  photo text,
+  last_signed_in timestamp with time zone,
+  password_changed_at timestamp with time zone,
+  reset_token text,
+  reset_token_expires timestamp with time zone
+);
+
