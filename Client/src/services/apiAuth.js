@@ -1,107 +1,156 @@
 import supabase from "@/services/supabase";
-import { getImagePath } from "@/utils/helpers";
 
+import { getImagePath } from "@/utils/helpers";
+const url = import.meta.env.VITE_ENDPOINT_URL;
+
+// todo: setup token at cookie and not in the localstorage
 export async function login({ email, password }) {
 
-    let { data, error } = await supabase.auth.signInWithPassword({
-        email, password
-    });
+    const response = await fetch(`${url}/users/login`, {
+        method: "POST",
+        headers: {
+            "Content-Type": "application/json"
+        },
+        body: JSON.stringify({ email, password })
 
+    });
+    let { user: data, token, error } = await response.json();
     if (error)
         throw new Error(error.message);
-    return data.user;
+    localStorage.setItem(`token`, JSON.stringify(`${token}`));
+    const user = {
+        id: data.id,
+        email: data.email,
+        user_metadata: {
+            fullName: data.name,
+            avatar: data.photo
+        },
+        created_at: data.created_at,
+        updated_at: data.updated_at,
+        last_sign_in_at: data.last_sign_in_at,
+        role: data.role
+
+    }
+    return user;
 
 }
 // const username = data.user.identities?.[0]?.identity_data.fullName;
-
+//done
 export async function signUp({ user }) {
-    if (!user.email || !user.password)
-        throw Error("No email or password");
+    const response = await fetch(`${url}/users/signup`, {
+        method: "POST",
+        headers: {
+            "Content-Type": "application/json"
+        },
+        body: JSON.stringify({
+            fullName: user.fullName,
+            email: user.email,
+            password: user.password,
+            passwordConfirm: user.passwordConfirm
+        })
+    })
 
-
-    let { data, error } = await supabase.auth.signUp({
-        email: user.email,
-        password: user.password,
-        options: {
-            data: {
-                fullName: user.fullName,
-                avatar: ""
-
-            }
-        }
-    });
+    const { data, error } = await response.json();
 
     if (error) {
-        console.error(error.message);
-        throw Error("signUp: error");
+        throw Error(error.message);
     }
 
-    console.log(data);
-    return data;
+    return { user: data };
 
 }
+// for now I'll delete the token and it will be enough
 export async function logout() {
 
-    let { error } = await supabase.auth.signOut();
-
-    if (error) {
-        console.error(error.message);
-        throw Error("Logout: Error");
-    }
-
-
+    localStorage.removeItem("token")
 }
-
 
 export async function getUser() {
 
-    const { data: session } = await supabase.auth.getSession();
-
-    if (!session.session) {
-        return null;
-    }
-
-    const { data, error } = await supabase.auth.getUser();
-
+    const response = await fetch(`${url}/users/cur-user`, {
+        method: 'GET',
+        headers: {
+            'authorization': `Bearer ${JSON.parse(localStorage.getItem('token'))}`
+        }
+    });
+    const { data, error } = await response.json();
     if (error) {
         console.error(error.message);
         throw new Error("getUser: not getting user");
     }
+    const user = {
+        id: data.id,
+        email: data.email,
+        user_metadata: {
+            fullName: data.name,
+            avatar: data.photo
+        },
+        created_at: data.created_at,
+        updated_at: data.updated_at,
+        last_sign_in_at: data.last_sign_in_at,
+        role: data.role
 
-    return data?.user;
+    }
+
+    return user;
 
 }
-
 export async function updatePassword({ password }) {
-    const { data, error } = await supabase.auth.updateUser({
-        password
+    const response = await fetch(`${url}/users`, {
+        method: "PATCH",
+        headers: {
+            "Content-Type": "application/json",
+            "authorization": `Bearer ${JSON.parse(localStorage.getItem('token'))}`
+        },
+        body: JSON.stringify({
+            password
+        })
     });
+    const { data, error } = await response.json();
     if (error) {
         console.error(error.message);
-        throw new Error("updatePassword: error")
+        throw new Error(error.message)
     }
-    console.log(data);
     return data;
 }
 
 export async function updateUserData({ updatedData }) {
+    //  Accept data
     const { avatar, fullName, previousImage } = updatedData;
 
-    const { hasImagePath, imagePath, imageName } = getImagePath(avatar||previousImage, "avatars");
+    /* await fetch(`${url}/users`, {
+        method: "patch",
+        headers: {
+        },
+        content: updatedData
+    */
 
-    const { data, error } = await supabase.auth.updateUser({
-        data: { fullName, avatar: imagePath }
-    });
+    //  get imagePath
+    const { hasImagePath, imagePath, imageName } = getImagePath(avatar || previousImage, "avatars");
 
 
+    // 4. generate a patch request
+    const response = await fetch(`${url}/users`, {
+        method: "PATCH",
+        headers: {
+            "Content-Type": "application/json",
+            "authorization": `Bearer ${JSON.parse(localStorage.getItem('token'))}`
+        },
+        body: JSON.stringify({
+            fullName,
+            photo: imagePath
+        })
+    })
+    const { data, error } = await response.json();
 
     if (error) {
-        console.error(error);
-        throw new Error("updateUserData: error")
+        // console.error(error.message);
+        throw new Error(error.message);
     }
 
 
 
+    // 4.  update for the second time.
     if (!hasImagePath) {
         const { error: imageError } = await supabase
             .storage
@@ -109,14 +158,34 @@ export async function updateUserData({ updatedData }) {
             .upload(imageName, avatar);
 
         if (imageError) {
-            await supabase.auth.updateUser({
-                data: { avatar: previousImage }
+            const response = await fetch(`${url}/users`, {
+                method: "PATCH",
+                headers: {
+                    "Content-Type": "application/json",
+                    "authorization": `Bearer ${JSON.parse(localStorage.getItem('token'))}`
+
+                },
+                body: JSON.stringify({
+                    photo: previousImage
+                })
             });
             console.error(imageError)
             throw new Error("updateUserData: error uploading Image");
         }
     }
-    
+    // 5. format update object to match the callers of this method
+    const user = {
+        id: data.id,
+        email: data.email,
+        user_metadata: {
+            fullName: data.name,
+            avatar: data.photo
+        },
+        created_at: data.created_at,
+        updated_at: data.updated_at,
+        last_sign_in_at: data.last_sign_in_at,
+        role: data.role
 
-    return data;
+    }
+    return user;
 }

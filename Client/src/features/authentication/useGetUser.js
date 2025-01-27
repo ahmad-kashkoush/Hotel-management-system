@@ -9,9 +9,10 @@ function useGetUser() {
         queryFn: getUser,
 
     });
+    const token = JSON.parse(localStorage.getItem("token"));
+    const isAuthenticated = !(!token);
 
 
-
-    return { user, isAuthenticated: user?.role === "authenticated", isLoading }
+    return { user, isAuthenticated, isLoading }
 }
 export default useGetUser;

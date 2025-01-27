@@ -1,4 +1,3 @@
-const { pool } = require("../server");
 const BaseModel = require("./BaseModel");
 
 class GuestModel extends BaseModel {
