@@ -1,5 +1,5 @@
 const express = require("express");
-const bookingController = require("./../controllers/todo-bookingController");
+const bookingController = require("../controllers/bookingController");
 const router = express.Router();
 
 

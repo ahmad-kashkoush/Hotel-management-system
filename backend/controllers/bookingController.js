@@ -8,7 +8,7 @@ exports.getBookings = catchAsync(async (req, res, next) => {
     let count = Bookings.totalCount;
     
     if (!count)
-        count = "no bookings right now"
+        count = "no booking right now"
     res.status(200).json({
         status: "success",
         count,
