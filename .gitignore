@@ -2,3 +2,5 @@ dist
 Client/node_modules
 **/.env
 backend/.env
+backend/service_account_key.json
+backend/.env

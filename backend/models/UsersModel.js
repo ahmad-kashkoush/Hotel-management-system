@@ -24,7 +24,6 @@ class UserModel extends BaseModel {
 
     }
     async create(data) {
-        console.log(data);
         const { rows } = await this.pool.query(`select * from ${this.tableName} where email=$1   `, [data.email]);
         if (rows.length > 0) {
             throw new AppError("Email already exists", 400);
