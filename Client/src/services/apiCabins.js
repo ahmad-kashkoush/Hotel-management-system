@@ -1,5 +1,5 @@
-import supabase from "@/services/supabase";
-import { getImagePath } from "@/utils/helpers";
+import { uploadToGCS } from "@/services/apiUpload";
+import { getImagePath, getImagePath2 } from "@/utils/helpers";
 const url = import.meta.env.VITE_ENDPOINT_URL;
 
 
@@ -27,7 +27,8 @@ export async function updateCabin(id, cabinData, imagePath) {
 export async function insertCabin({ cabinData, previousImage = "", id = null }) {
 
     // todo add third part image storer
-    const { hasImagePath, imageName, imagePath } = getImagePath(cabinData.image || previousImage, "cabin-images");
+    const bucketFolderName = "cabins";
+    const { imageName, imagePath } = getImagePath2(cabinData.image, bucketFolderName, previousImage);
 
     // let query = supabase.from('cabins');
 
@@ -59,7 +60,6 @@ export async function insertCabin({ cabinData, previousImage = "", id = null }) 
 
 
     }
-    // const { data, error } = await query.select().single();
 
 
     if (error) {
@@ -67,11 +67,10 @@ export async function insertCabin({ cabinData, previousImage = "", id = null }) 
         console.error(error);
         throw new Error(errorMessage);
     }
-    if (!hasImagePath) {
-        const { error: imageError } = await supabase
-            .storage
-            .from('cabin-images')
-            .upload(imageName, cabinData.image);
+
+
+    if (imagePath !== previousImage) {
+        const { imageError, imageUrl } = await uploadToGCS(cabinData.image, imageName, bucketFolderName);
         if (imageError) {
             if (!id)
                 await deleteCabin(data.id);

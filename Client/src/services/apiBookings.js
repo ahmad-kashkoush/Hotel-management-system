@@ -60,7 +60,6 @@ export async function getBookingsAfterDate(date) {
   //   .lte("created_at", getToday({ end: true }));
   const response = await fetch(`${url}/bookings/after-date?date=${date}`);
   const { data, error } = await response.json();
-  console.log(date);
   if (error) {
     console.error(error);
     throw new Error("Bookings could not get loaded");

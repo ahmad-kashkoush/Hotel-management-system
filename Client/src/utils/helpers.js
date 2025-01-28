@@ -33,8 +33,21 @@ export const formatCurrency = (value) =>
 export const getStartOfPage = (page) => page * PAGE_SIZE;
 export const getEndOfPage = (page) => getStartOfPage(page) + PAGE_SIZE - 1;
 export const getImagePath = (image, bucketName) => {
+  // previous image
   const hasImagePath = typeof image === "string"   ? image.startsWith(supabaseUrl) : false;
-  const imageName = `${Math.random()}-${image?.name}`.replaceAll('/', '').replaceAll(' ', '-');
+  const imageName = `${bucketName}/${Date.now()}-${image.originalname.replaceAll(" ", "-")}`;
   const imagePath = hasImagePath ? image : `${supabaseUrl}/storage/v1/object/public/${bucketName}/${imageName}`;
   return { imagePath, hasImagePath, imageName };
 }
+
+export const getImagePath2 = (avatar, bucketFolderName, previousImage) => {
+  let imagePath = previousImage;
+  let imageName = "";
+  let cloudStorage = "https://storage.googleapis.com/wild_oasis_bucket"
+  if (avatar) {
+      imageName = `${Date.now()}-${avatar?.name?.replaceAll(" ", "-")}`;
+      imagePath = `${cloudStorage}/${bucketFolderName}/${imageName}`
+  }
+  return { imagePath, imageName };
+}
+// https://storage.googleapis.com/${bucket.name}/${blob.name}

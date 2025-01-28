@@ -13,7 +13,6 @@ exports.getSettings = catchAsync(async (req, res, next) => {
 });
 
 exports.updateSettings = catchAsync(async (req, res, next) => {
-    console.log(req.body);
     let updatedSettigns = await Settings.updateSettings(req.body);
     if (!updatedSettigns) {
         return next(new AppError("Could not update settings", 400));

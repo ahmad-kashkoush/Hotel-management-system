@@ -36,7 +36,6 @@ class BookingModel extends BaseModel {
         }
         this.totalCount = rows.length;
         return rows.slice(start, end);
-        // console.log(`coming from booking model with query: ${query}`);
     }
 
 
