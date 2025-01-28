@@ -7,6 +7,7 @@ const settingsRouter = require("./routers/settings-router");
 const usersRouter = require("./routers/users-router");
 const AppError = require("./AppError");
 const cors = require("cors")
+const uploadImageController = require("./controllers/uploadImageController");
 const app = express();
 
 
@@ -22,6 +23,11 @@ app.use("/api/v1/cabins", cabinsRouter);
 app.use("/api/v1/bookings", bookingsRouter);
 app.use("/api/v1/settings", settingsRouter);
 app.use("/api/v1/users", usersRouter);
+
+// upload logic
+app.post("/api/v1/upload", uploadImageController.upload.single("file"), uploadImageController.uploadImage);
+
+//
 app.all('*', (req, res, next) => {
     next(new AppError("Request cann't be handled", 404))
 });

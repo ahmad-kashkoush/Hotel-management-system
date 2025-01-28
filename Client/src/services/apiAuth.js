@@ -1,6 +1,7 @@
-import supabase from "@/services/supabase";
 
-import { getImagePath } from "@/utils/helpers";
+
+import { uploadToGCS } from "@/services/apiUpload";
+import { getImagePath2 } from "@/utils/helpers";
 const url = import.meta.env.VITE_ENDPOINT_URL;
 
 // todo: setup token at cookie and not in the localstorage
@@ -91,7 +92,6 @@ export async function getUser() {
         role: data.role
 
     }
-
     return user;
 
 }
@@ -126,7 +126,10 @@ export async function updateUserData({ updatedData }) {
     */
 
     //  get imagePath
-    const { hasImagePath, imagePath, imageName } = getImagePath(avatar || previousImage, "avatars");
+
+
+    let bucketFolderName = "avatars";
+    const { imagePath, imageName } = getImagePath2(avatar, bucketFolderName, previousImage);
 
 
     // 4. generate a patch request
@@ -151,12 +154,8 @@ export async function updateUserData({ updatedData }) {
 
 
     // 4.  update for the second time.
-    if (!hasImagePath) {
-        const { error: imageError } = await supabase
-            .storage
-            .from('avatars')
-            .upload(imageName, avatar);
-
+    if (imagePath !== previousImage) {
+        const { imageUrl, imageError } = await uploadToGCS(avatar, imageName, bucketFolderName);
         if (imageError) {
             const response = await fetch(`${url}/users`, {
                 method: "PATCH",
@@ -189,3 +188,4 @@ export async function updateUserData({ updatedData }) {
     }
     return user;
 }
+
