@@ -11,7 +11,11 @@ The Wild Oasis is a comprehensive hotel management system designed to facilitate
 guest check-in and check-out processes, as well as provide detailed statistical
 insights into customers data such as bookings, cabins, ... etc.
 
-Credits goes to: **jonas-schmedtmann**
+
+https://github.com/user-attachments/assets/7e8ca76d-3996-4b14-bb0e-6e59a5573cb4
+
+
+![Pasted image 20240810233844](docs/Pasted%20image%2020240810233844.png)
 
 👉 Live demo: https://hotel-management-system-mu.vercel.app/
 
@@ -25,15 +29,6 @@ Credits goes to: **jonas-schmedtmann**
 - recharts: for building charts and diagrams
 - ErrorBoundary for catching rendering errors
 - postgres
-
-## Demo
-### vid
-
-
-https://github.com/user-attachments/assets/7e8ca76d-3996-4b14-bb0e-6e59a5573cb4
-
-
-![Pasted image 20240810233844](docs/Pasted%20image%2020240810233844.png)
 
 ## What I've learnt
 
